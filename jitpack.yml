@@ -1,2 +1,6 @@
+before_install:
+  - sdk install java corretto-20
+  - sdk use java corretto-20
+
 jdk:
   - corretto-20
