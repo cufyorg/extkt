@@ -15,8 +15,6 @@
  */
 package org.cufy.bson
 
-import kotlin.js.JsName
-
 /* ============= ------------------ ============= */
 
 /**
@@ -43,13 +41,11 @@ data class BsonString(val value: String) : BsonElement {
 /**
  * Return a [BsonString] with the value of this.
  */
-@get:JsName("String_bson")
 inline val String.bson: BsonString get() = BsonString(this)
 
 /**
  * Return a [BsonString] with the value of this or [BsonNull] if this is `null`.
  */
-@get:JsName("String_bson_nullable")
 val String?.bson: BsonElement get() = this?.let { bson } ?: null.bson
 
 /* ============= ------------------ ============= */

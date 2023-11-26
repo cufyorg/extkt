@@ -15,8 +15,6 @@
  */
 package org.cufy.bson
 
-import kotlin.js.JsName
-
 /* ============= ------------------ ============= */
 
 /**
@@ -63,7 +61,6 @@ class BsonDocument @PublishedApi internal constructor(
  * Construct a new empty bson document.
  */
 @Suppress("NOTHING_TO_INLINE")
-@JsName("EmptyBsonDocument")
 inline fun BsonDocument(): BsonDocument {
     return BsonDocument.Empty
 }

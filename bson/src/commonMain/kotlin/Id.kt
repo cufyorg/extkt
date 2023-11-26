@@ -20,7 +20,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 /* ============= ------------------ ============= */
@@ -59,7 +58,6 @@ typealias AnyId = Id<out Any?>
  *
  * @since 2.0.0
  */
-@get:JsName("Id_bson")
 val Id<*>.bson: BsonElement
     get() {
         if (ObjectId.isValid(value))
@@ -78,7 +76,6 @@ val Id<*>.bson: BsonElement
  * @since 2.0.0
  */
 @get:JvmName("bson_nullable")
-@get:JsName("Id_bson_nullable")
 val Id<*>?.bson: BsonElement get() = this?.let { bson } ?: null.bson
 
 /* ============= ------------------ ============= */

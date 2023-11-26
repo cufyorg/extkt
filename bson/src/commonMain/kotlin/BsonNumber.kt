@@ -15,8 +15,6 @@
  */
 package org.cufy.bson
 
-import kotlin.js.JsName
-
 /* ============= ------------------ ============= */
 
 /**
@@ -157,49 +155,41 @@ data class BsonDecimal128(override val value: Decimal128) : BsonElement, BsonNum
 /**
  * Return a [BsonInt32] with the value of this.
  */
-@get:JsName("Int_bson")
 inline val Int.bson: BsonInt32 get() = BsonInt32(this)
 
 /**
  * Return a [BsonInt32] with the value of this or [BsonNull] if this is `null`.
  */
-@get:JsName("Int_bson_nullable")
 val Int?.bson: BsonElement get() = this?.let { bson } ?: null.bson
 
 /**
  * Return a [BsonInt64] with the value of this.
  */
-@get:JsName("Long_bson")
 inline val Long.bson: BsonInt64 get() = BsonInt64(this)
 
 /**
  * Return a [BsonInt64] with the value of this or [BsonNull] if this is `null`.
  */
-@get:JsName("Long_bson_nullable")
 val Long?.bson: BsonElement get() = this?.let { bson } ?: null.bson
 
 /**
  * Return a [BsonDouble] with the value of this.
  */
-@get:JsName("Double_bson")
 inline val Double.bson: BsonDouble get() = BsonDouble(this)
 
 /**
  * Return a [BsonDouble] with the value of this or [BsonNull] if this is `null`.
  */
-@get:JsName("Double_bson_nullable")
 val Double?.bson: BsonElement get() = this?.let { bson } ?: null.bson
 
 /**
  * Return a [BsonDecimal128] with the value of this.
  */
-@get:JsName("Decimal128_bson")
 inline val Decimal128.bson: BsonDecimal128 get() = BsonDecimal128(this)
 
 /**
  * Return a [BsonDecimal128] with the value of this or [BsonNull] if this is `null`.
  */
-@get:JsName("Decimal128_bson_nullable")
 val Decimal128?.bson: BsonElement get() = this?.let { bson } ?: null.bson
 
 /* ============= ------------------ ============= */

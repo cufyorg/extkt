@@ -8,7 +8,6 @@ plugins {
 kotlin {
     jvm {
         withJava()
-        jvmToolchain(20)
     }
     sourceSets {
         commonMain {

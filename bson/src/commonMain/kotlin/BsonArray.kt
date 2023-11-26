@@ -15,8 +15,6 @@
  */
 package org.cufy.bson
 
-import kotlin.js.JsName
-
 /* ============= ------------------ ============= */
 
 /**
@@ -61,7 +59,6 @@ class BsonArray @PublishedApi internal constructor(
  * Construct a new empty bson array.
  */
 @Suppress("NOTHING_TO_INLINE")
-@JsName("EmptyBsonArray")
 inline fun BsonArray(): BsonArray {
     return BsonArray.Empty
 }

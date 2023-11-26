@@ -11,7 +11,7 @@ tasks.wrapper {
 }
 
 subprojects {
-    group = "org.cufy.codecs"
+    group = "org.cufy.kped"
 
     repositories {
         mavenCentral()
