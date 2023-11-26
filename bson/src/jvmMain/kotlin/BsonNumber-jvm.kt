@@ -19,16 +19,16 @@ import java.math.BigDecimal
 
 /* ============= ------------------ ============= */
 
-internal typealias JavaBsonInt32 =
+typealias JavaBsonInt32 =
         org.bson.BsonInt32
 
-internal typealias JavaBsonInt64 =
+typealias JavaBsonInt64 =
         org.bson.BsonInt64
 
-internal typealias JavaBsonDouble =
+typealias JavaBsonDouble =
         org.bson.BsonDouble
 
-internal typealias JavaBsonDecimal128 =
+typealias JavaBsonDecimal128 =
         org.bson.BsonDecimal128
 
 /* ============= ------------------ ============= */

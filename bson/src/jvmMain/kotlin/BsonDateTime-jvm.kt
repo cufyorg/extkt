@@ -19,7 +19,7 @@ import java.util.*
 
 /* ============= ------------------ ============= */
 
-internal typealias JavaBsonDateTime =
+typealias JavaBsonDateTime =
         org.bson.BsonDateTime
 
 /* ============= ------------------ ============= */

@@ -17,13 +17,13 @@ package org.cufy.bson
 
 /* ============= ------------------ ============= */
 
-internal typealias JavaBsonBoolean =
+typealias JavaBsonBoolean =
         org.bson.BsonBoolean
 
-internal typealias JavaBsonUndefined =
+typealias JavaBsonUndefined =
         org.bson.BsonUndefined
 
-internal typealias JavaBsonNull =
+typealias JavaBsonNull =
         org.bson.BsonNull
 
 /* ============= ------------------ ============= */

@@ -17,7 +17,7 @@ package org.cufy.bson
 
 /* ============= ------------------ ============= */
 
-internal typealias JavaBsonRegExp =
+typealias JavaBsonRegExp =
         org.bson.BsonRegularExpression
 
 /* ============= ------------------ ============= */

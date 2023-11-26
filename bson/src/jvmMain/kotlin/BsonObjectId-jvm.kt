@@ -17,7 +17,7 @@ package org.cufy.bson
 
 /* ============= ------------------ ============= */
 
-internal typealias JavaBsonObjectId =
+typealias JavaBsonObjectId =
         org.bson.BsonObjectId
 
 /* ============= ------------------ ============= */
