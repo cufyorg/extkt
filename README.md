@@ -1,2 +1,1 @@
-# codecs
- Kotlin codecs and extensions
+# Kotlin Partial Encoding Decoding (KPED)

@@ -12,11 +12,14 @@ pluginManagement {
     }
 }
 
-rootProject.name = "codecs"
+rootProject.name = "kped"
+
+include(":bson")
+include(":json")
 
 // include directories that starts with "meemer-"
 for (file in rootDir.listFiles().orEmpty()) {
-    if (file.isDirectory && file.name.startsWith("codecs-")) {
+    if (file.isDirectory && file.name.startsWith("kped-")) {
         include(":${file.name}")
     }
 }
