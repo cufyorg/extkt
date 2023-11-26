@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="codecs-bson-jvm">
+    <output-path>$PROJECT_DIR$/codecs-bson/build/libs</output-path>
+    <root id="archive" name="codecs-bson-jvm.jar">
+      <element id="module-output" name="codecs.codecs-bson.jvmMain" />
+    </root>
+  </artifact>
+</component>
