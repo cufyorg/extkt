@@ -1,6 +1,0 @@
-before_install:
-  - sdk install java 20-amzn
-  - sdk use java 20-amzn
-
-jdk:
-  - 20-amzn

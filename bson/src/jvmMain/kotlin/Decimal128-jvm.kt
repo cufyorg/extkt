@@ -15,7 +15,6 @@
  */
 package org.cufy.bson
 
-import java.io.Serial
 import java.math.BigDecimal
 
 /* ============= ------------------ ============= */
@@ -43,8 +42,8 @@ actual class Decimal128(val java: JavaDecimal128) : Number(), Comparable<Decimal
     //
 
     actual companion object {
-        @Serial
-        private val serialVersionUID: Long = 4570973266503637887L
+        @Suppress("ConstPropertyName")
+        private const val serialVersionUID: Long = 4570973266503637887L
 
         actual val POSITIVE_INFINITY: Decimal128 =
             JavaDecimal128.POSITIVE_INFINITY.kt
