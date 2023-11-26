@@ -26,7 +26,6 @@ kotlin {
             dependencies {
                 implementation(libs.mongodb.sync)
                 implementation(libs.mongodb.reactivestreams)
-
             }
         }
     }
