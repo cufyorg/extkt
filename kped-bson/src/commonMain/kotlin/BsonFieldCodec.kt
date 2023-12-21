@@ -15,8 +15,9 @@
  */
 package org.cufy.kped
 
-import org.cufy.bson.*
-import java.util.*
+import org.cufy.bson.BsonDocumentLike
+import org.cufy.bson.BsonElement
+import org.cufy.bson.MutableBsonMapField
 
 /* ============= ------------------ ============= */
 
@@ -107,6 +108,9 @@ infix fun <I, O : BsonElement> String.be(codec: Codec<I, O>): BsonFieldCodec<I, 
     return FieldCodec(this, codec)
 }
 
+/**
+ * Return a new codec backed by this codec that returns the given [defaultValue] when decoding fails.
+ */
 @OptIn(ExperimentalKpedApi::class)
 @KpedMarker1
 infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultIn(defaultValue: I): BsonFieldCodec<I, O> {
@@ -114,6 +118,9 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultIn(defaultValue: I): 
     return BsonFieldCodec(name, codec defaultIn defaultValue)
 }
 
+/**
+ * Return a new codec backed by this codec that returns the result of invoking the given [block] when decoding fails.
+ */
 @OptIn(ExperimentalKpedApi::class)
 @KpedMarker1
 infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchIn(block: (Throwable) -> I): BsonFieldCodec<I, O> {
@@ -121,6 +128,9 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchIn(block: (Throwable) -
     return BsonFieldCodec(name, codec catchIn block)
 }
 
+/**
+ * Return a new codec backed by this codec that returns the given [defaultValue] when encoding fails.
+ */
 @OptIn(ExperimentalKpedApi::class)
 @KpedMarker1
 infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultOut(defaultValue: O): BsonFieldCodec<I, O> {
@@ -128,6 +138,9 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultOut(defaultValue: O):
     return BsonFieldCodec(name, codec defaultOut defaultValue)
 }
 
+/**
+ * Return a new codec backed by this codec that returns the result of invoking the given [block] when encoding fails.
+ */
 @OptIn(ExperimentalKpedApi::class)
 @KpedMarker1
 infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchOut(block: (Throwable) -> O): BsonFieldCodec<I, O> {
@@ -144,44 +157,6 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchOut(block: (Throwable) 
 operator fun <I> BsonDocumentLike.get(codec: FieldCodec<I, out BsonElement>): I {
     val element = this[codec.name]
     return decodeAny(element, codec)
-}
-
-/**
- * Select the element with the perfect tag for the given [lang] preference.
- *
- * @param lang a list of comma-separated language ranges or a list of language
- *                 ranges in the form of the "Accept-Language" header defined in RFC 2616
- * @throws IllegalArgumentException if a language range or a weight found in the
- *                                  given ranges is ill-formed
- * @see Locale.LanguageRange.parse
- */
-@ExperimentalBsonApi
-operator fun <I> BsonDocumentLike.get(codec: FieldCodec<I, out BsonElement>, lang: String): Localized<I> {
-    val (element, langTag) = this[codec.name, lang]
-    return Localized(decodeAny(element, codec), lang = langTag)
-}
-
-/**
- * Select the element with the perfect tag for the given [lang] preference.
- *
- * @param lang the languages ordered by preference. (e.g. `["en-US", "ar-SA"]`)
- * @throws IllegalArgumentException if the given range does not comply with the
- *                                  syntax of the language range mentioned
- *                                  in RFC 4647
- * @see Locale.LanguageRange
- */
-@ExperimentalBsonApi
-operator fun <I> BsonDocumentLike.get(codec: FieldCodec<I, out BsonElement>, lang: List<String>): Localized<I> {
-    val (element, langTag) = this[codec.name, lang]
-    return Localized(decodeAny(element, codec), lang = langTag)
-}
-
-/**
- * Return the tags of the fields that has the name of the given [codec].
- */
-@ExperimentalBsonApi
-fun <I> BsonDocumentLike.getLangList(codec: FieldCodec<I, out BsonElement>): List<String> {
-    return getLangList(codec.name)
 }
 
 /* ============= ------------------ ============= */

@@ -47,6 +47,16 @@ fun <I, O> FieldCodec(name: String, codec: Codec<I, O>): FieldCodec<I, O> {
 /* ============= ------------------ ============= */
 
 /**
+ * Return a string derived from this one with
+ * its content tagged with the given language [tag].
+ */
+@KpedMarker1
+infix fun String.lang(tag: String): String {
+    if (tag.isEmpty()) return this
+    return "$this#$tag"
+}
+
+/**
  * Return a field codec derived from this one with
  * its name tagged with the given language [tag].
  */

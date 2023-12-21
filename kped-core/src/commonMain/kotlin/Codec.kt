@@ -53,6 +53,9 @@ interface Codec<I, O> {
 
 /* ============= ------------------ ============= */
 
+/**
+ * Return a new codec backed by this codec that returns the given [defaultValue] when decoding fails.
+ */
 @KpedMarker1
 infix fun <I, O> Codec<I, O>.defaultIn(defaultValue: I): Codec<I, O> {
     val codec = this
@@ -69,6 +72,9 @@ infix fun <I, O> Codec<I, O>.defaultIn(defaultValue: I): Codec<I, O> {
     }
 }
 
+/**
+ * Return a new codec backed by this codec that returns the result of invoking the given [block] when decoding fails.
+ */
 @KpedMarker1
 infix fun <I, O> Codec<I, O>.catchIn(block: (Throwable) -> I): Codec<I, O> {
     val codec = this
@@ -85,6 +91,9 @@ infix fun <I, O> Codec<I, O>.catchIn(block: (Throwable) -> I): Codec<I, O> {
     }
 }
 
+/**
+ * Return a new codec backed by this codec that returns the given [defaultValue] when encoding fails.
+ */
 @KpedMarker1
 infix fun <I, O> Codec<I, O>.defaultOut(defaultValue: O): Codec<I, O> {
     val codec = this
@@ -101,6 +110,9 @@ infix fun <I, O> Codec<I, O>.defaultOut(defaultValue: O): Codec<I, O> {
     }
 }
 
+/**
+ * Return a new codec backed by this codec that returns the result of invoking the given [block] when encoding fails.
+ */
 @KpedMarker1
 infix fun <I, O> Codec<I, O>.catchOut(block: (Throwable) -> O): Codec<I, O> {
     val codec = this
