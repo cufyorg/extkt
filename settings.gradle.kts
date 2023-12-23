@@ -12,7 +12,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "kped"
+rootProject.name = "ped"
 
 include(":bson")
 include(":json")
