@@ -13,7 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package org.cufy.kped
+package org.cufy.ped
 
 /* ============= ------------------ ============= */
 
@@ -99,7 +99,7 @@ abstract class CodecClass<I, O>(block: CodecBuilder<I, O>.() -> Unit) : Codec<I,
  *
  * @see tryInlineCodecAny
  */
-@KpedMarker1
+@KpedMarker4
 fun <I, O> CodecBuilder<I, O>.encodeAny(block: (Any?) -> Result<O>) {
     encodeBlock = block
 }
@@ -113,7 +113,7 @@ fun <I, O> CodecBuilder<I, O>.encodeAny(block: (Any?) -> Result<O>) {
  *
  * @see tryInlineCodecAnyCatching
  */
-@KpedMarker1
+@KpedMarker4
 fun <I, O> CodecBuilder<I, O>.encodeAnyCatching(block: (Any?) -> O) {
     encodeAny { tryInlineCodecAnyCatching(it, block) }
 }
@@ -132,7 +132,7 @@ fun <I, O> CodecBuilder<I, O>.encodeAnyCatching(block: (Any?) -> O) {
  *
  * @see tryInlineCodec
  */
-@KpedMarker1
+@KpedMarker4
 inline fun <reified I, O> CodecBuilder<I, O>.encode(crossinline block: (I) -> Result<O>) {
     encodeAny { tryInlineCodec(it, block) }
 }
@@ -150,7 +150,7 @@ inline fun <reified I, O> CodecBuilder<I, O>.encode(crossinline block: (I) -> Re
  *
  * @see tryInlineCodecCatching
  */
-@KpedMarker1
+@KpedMarker4
 inline fun <reified I, O> CodecBuilder<I, O>.encodeCatching(crossinline block: (I) -> O) {
     encodeAny { tryInlineCodecCatching(it, block) }
 }
@@ -164,7 +164,7 @@ inline fun <reified I, O> CodecBuilder<I, O>.encodeCatching(crossinline block: (
  *
  * @see tryInlineCodecAny
  */
-@KpedMarker1
+@KpedMarker4
 fun <I, O> CodecBuilder<I, O>.decodeAny(block: (Any?) -> Result<I>) {
     decodeBlock = block
 }
@@ -178,7 +178,7 @@ fun <I, O> CodecBuilder<I, O>.decodeAny(block: (Any?) -> Result<I>) {
  *
  * @see tryInlineCodecAnyCatching
  */
-@KpedMarker1
+@KpedMarker4
 fun <I, O> CodecBuilder<I, O>.decodeAnyCatching(block: (Any?) -> I) {
     decodeAny { tryInlineCodecAnyCatching(it, block) }
 }
@@ -197,7 +197,7 @@ fun <I, O> CodecBuilder<I, O>.decodeAnyCatching(block: (Any?) -> I) {
  *
  * @see tryInlineCodec
  */
-@KpedMarker1
+@KpedMarker4
 inline fun <I, reified O> CodecBuilder<I, O>.decode(crossinline block: (O) -> Result<I>) {
     decodeAny { tryInlineCodec(it, block) }
 }
@@ -215,7 +215,7 @@ inline fun <I, reified O> CodecBuilder<I, O>.decode(crossinline block: (O) -> Re
  *
  * @see tryInlineCodecCatching
  */
-@KpedMarker1
+@KpedMarker4
 inline fun <I, reified O> CodecBuilder<I, O>.decodeCatching(crossinline block: (O) -> I) {
     decodeAny { tryInlineCodecCatching(it, block) }
 }

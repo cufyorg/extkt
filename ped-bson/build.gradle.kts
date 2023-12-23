@@ -13,7 +13,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":bson"))
-                implementation(project(":kped-core"))
+                implementation(project(":ped-core"))
 
                 implementation(kotlin("stdlib"))
                 implementation(libs.kotlin.serialization.json)

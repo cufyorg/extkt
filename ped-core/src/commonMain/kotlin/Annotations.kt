@@ -13,7 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package org.cufy.kped
+package org.cufy.ped
 
 /**
  * Marks the annotated component as experimental.
@@ -33,7 +33,7 @@ annotation class ExperimentalKpedApi
  * @since 2.0.0
  */
 @DslMarker
-annotation class KpedMarker0
+annotation class KpedMarker3
 
 /**
  * A dsl marker for codec builder functions.
@@ -42,4 +42,4 @@ annotation class KpedMarker0
  * @since 2.0.0
  */
 @DslMarker
-annotation class KpedMarker1
+annotation class KpedMarker4

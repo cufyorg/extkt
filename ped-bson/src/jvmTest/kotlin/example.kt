@@ -1,31 +1,10 @@
-package org.cufy.kped
+package org.cufy.ped
 
 import org.cufy.bson.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ExampleTest {
-    @OptIn(ExperimentalBsonApi::class)
-    @Test
-    fun `tagged fields`() {
-        val doc = BsonDocument {
-            Document1.Name by "default"
-            Document1.Name lang "en" by "EN"
-            Document1.Name lang "en-US" by "EN-US"
-            Document1.Name lang "ar" by "AR"
-            Document1.Name lang "ar-SA" by "AR-SA"
-        }
-
-        val preference = listOf("en-US", "ar-SA")
-        val (automatic, automaticLang) = doc[Document1.Name, preference]
-        val manual = doc[Document1.Name.Nullable lang "ar-SA"]
-
-        assertEquals("name#en-US", "name" lang "en-US")
-        assertEquals(automatic, "EN-US")
-        assertEquals(automaticLang, "en-US")
-        assertEquals(manual, "AR-SA")
-    }
-
     @Test
     fun `common example 1`() {
         val id = Id<Document1>()

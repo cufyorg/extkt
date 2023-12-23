@@ -19,7 +19,7 @@ include(":json")
 
 // include directories that starts with "meemer-"
 for (file in rootDir.listFiles().orEmpty()) {
-    if (file.isDirectory && file.name.startsWith("kped-")) {
+    if (file.isDirectory && file.name.startsWith("ped-")) {
         include(":${file.name}")
     }
 }

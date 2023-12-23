@@ -1,4 +1,4 @@
-# Kotlin Partial Encoding Decoding (KPED) [![](https://jitpack.io/v/org.cufy/kped.svg)](https://jitpack.io/#org.cufy/kped)
+# Partial Encoding / Decoding (PED) [![](https://jitpack.io/v/org.cufy/ped.svg)](https://jitpack.io/#org.cufy/ped)
 
 Serialization Extensions and Serializers for enhancing partial encoding and decoding
 that uses no object mapping.
@@ -17,9 +17,9 @@ repositories {
 
 dependencies {
     // Replace TAG with the desired version
-    implementation("org.cufy.kped:bson:TAG")
-    implementation("org.cufy.kped:json:TAG")
-    implementation("org.cufy.kped:kped-core:TAG")
-    implementation("org.cufy.kped:kped-bson:TAG")
+    implementation("org.cufy.ped:bson:TAG")
+    implementation("org.cufy.ped:json:TAG")
+    implementation("org.cufy.ped:ped-core:TAG")
+    implementation("org.cufy.ped:ped-bson:TAG")
 }
 ```

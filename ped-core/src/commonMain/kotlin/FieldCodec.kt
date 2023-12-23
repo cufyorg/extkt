@@ -13,7 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package org.cufy.kped
+package org.cufy.ped
 
 /* ============= ------------------ ============= */
 
@@ -50,7 +50,7 @@ fun <I, O> FieldCodec(name: String, codec: Codec<I, O>): FieldCodec<I, O> {
  * Return a string derived from this one with
  * its content tagged with the given language [tag].
  */
-@KpedMarker1
+@KpedMarker4
 infix fun String.lang(tag: String): String {
     if (tag.isEmpty()) return this
     return "$this#$tag"
@@ -60,7 +60,7 @@ infix fun String.lang(tag: String): String {
  * Return a field codec derived from this one with
  * its name tagged with the given language [tag].
  */
-@KpedMarker1
+@KpedMarker4
 infix fun <I, O> FieldCodec<I, O>.lang(tag: String): FieldCodec<I, O> {
     if (tag.isEmpty()) return this
     return FieldCodec("$name#$tag", this)
@@ -70,7 +70,7 @@ infix fun <I, O> FieldCodec<I, O>.lang(tag: String): FieldCodec<I, O> {
  * Create a new field codec with the given [name]
  * and backed by [this] codec.
  */
-@KpedMarker1
+@KpedMarker4
 infix fun <I, O> Codec<I, O>.at(name: String): FieldCodec<I, O> {
     return FieldCodec(name, this)
 }
@@ -88,18 +88,18 @@ infix fun <I, O> Codec<I, O>.at(name: String): FieldCodec<I, O> {
  * }
  * ```
  */
-@KpedMarker1
+@KpedMarker4
 infix fun <I, O> String.be(codec: Codec<I, O>): FieldCodec<I, O> {
     return FieldCodec(this, codec)
 }
 
-@KpedMarker1
+@KpedMarker4
 infix fun <I, O> FieldCodec<I, O>.catchIn(block: (Throwable) -> I): FieldCodec<I, O> {
     val codec = this as Codec<I, O>
     return FieldCodec(name, codec catchIn block)
 }
 
-@KpedMarker1
+@KpedMarker4
 infix fun <I, O> FieldCodec<I, O>.catchOut(block: (Throwable) -> O): FieldCodec<I, O> {
     val codec = this as Codec<I, O>
     return FieldCodec(name, codec catchOut block)

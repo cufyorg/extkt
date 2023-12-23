@@ -13,13 +13,23 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package org.cufy.kped
+package org.cufy.ped
+
+import org.cufy.bson.BsonDateTime
+import org.cufy.bson.BsonDecimal128
+import java.math.BigDecimal
+import java.util.*
 
 /**
- * An exception thrown when a codec operation fails.
+ * The codec for [BigDecimal] and [BsonDecimal128].
  *
- * @author LSafer
  * @since 2.0.0
  */
-open class CodecException(message: String? = null, cause: Throwable? = null) :
-    RuntimeException(message ?: cause?.message, cause)
+inline val Bson.BigDecimal get() = BsonBigDecimalCodec
+
+/**
+ * The codec for [Date] and [BsonDateTime].
+ *
+ * @since 2.0.0
+ */
+inline val Bson.Date get() = BsonDateCodec
