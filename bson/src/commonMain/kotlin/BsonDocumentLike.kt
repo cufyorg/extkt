@@ -117,7 +117,7 @@ fun mutableBsonDocumentOf(vararg pairs: Pair<String, BsonElement>): MutableBsonD
 
 /**
  * An interface allowing custom receivers for
- * [MutableBsonDocumentLike.by].
+ * [by][IMutableBsonDocumentLike.by].
  *
  * This interface will be useless after context
  * receivers is released for production.

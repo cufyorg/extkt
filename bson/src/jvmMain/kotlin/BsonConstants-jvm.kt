@@ -31,7 +31,7 @@ typealias JavaBsonNull =
 /**
  * Return the java version of this bson element.
  */
-val BsonBoolean.java: JavaBsonBoolean
+inline val BsonBoolean.java: JavaBsonBoolean
     get() = when (this) {
         is BsonBoolean.True -> JavaBsonBoolean.TRUE
         is BsonBoolean.False -> JavaBsonBoolean.FALSE
@@ -40,35 +40,35 @@ val BsonBoolean.java: JavaBsonBoolean
 /**
  * Return the kotlin version of this bson element.
  */
-val JavaBsonBoolean.kt: BsonBoolean
+inline val JavaBsonBoolean.kt: BsonBoolean
     get() = BsonBoolean(value)
 
 /**
  * Return the java version of this bson element.
  */
 @Suppress("UnusedReceiverParameter")
-val BsonUndefined.java: JavaBsonUndefined
+inline val BsonUndefined.java: JavaBsonUndefined
     get() = JavaBsonUndefined()
 
 /**
  * Return the kotlin version of this bson element.
  */
 @Suppress("UnusedReceiverParameter")
-val JavaBsonUndefined.kt: BsonUndefined
+inline val JavaBsonUndefined.kt: BsonUndefined
     get() = BsonUndefined
 
 /**
  * Return the java version of this bson element.
  */
 @Suppress("UnusedReceiverParameter")
-val BsonNull.java: JavaBsonNull
+inline val BsonNull.java: JavaBsonNull
     get() = JavaBsonNull.VALUE
 
 /**
  * Return the kotlin version of this bson element.
  */
 @Suppress("UnusedReceiverParameter")
-val JavaBsonNull.kt: BsonNull
+inline val JavaBsonNull.kt: BsonNull
     get() = BsonNull
 
 /* ============= ------------------ ============= */

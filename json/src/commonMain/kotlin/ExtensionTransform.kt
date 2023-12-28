@@ -116,4 +116,5 @@ inline val Number?.json: JsonPrimitive get() = JsonPrimitive(this)
 inline val Boolean?.json: JsonPrimitive get() = JsonPrimitive(this)
 
 /** return a [JsonPrimitive] instance from the content of this. */
+@Suppress("UnusedReceiverParameter")
 inline val Nothing?.json: JsonPrimitive get() = JsonNull

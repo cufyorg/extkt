@@ -25,6 +25,7 @@ import java.util.*
  *
  * @since 2.0.0
  */
+@Suppress("UnusedReceiverParameter")
 inline val Bson.BigDecimal get() = BsonBigDecimalCodec
 
 /**
@@ -32,4 +33,5 @@ inline val Bson.BigDecimal get() = BsonBigDecimalCodec
  *
  * @since 2.0.0
  */
+@Suppress("UnusedReceiverParameter")
 inline val Bson.Date get() = BsonDateCodec
