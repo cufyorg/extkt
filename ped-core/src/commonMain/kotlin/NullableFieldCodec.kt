@@ -42,25 +42,25 @@ fun <I, O> FieldCodec(name: String, codec: NullableCodec<I, O>): NullableFieldCo
 
 /* ============= ------------------ ============= */
 
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableFieldCodec<I, O>.defaultIn(defaultValue: I): NullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec defaultIn defaultValue)
 }
 
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableFieldCodec<I, O>.catchIn(block: (Throwable) -> I): NullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec catchIn block)
 }
 
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableFieldCodec<I, O>.defaultOut(defaultValue: O): NullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec defaultOut defaultValue)
 }
 
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableFieldCodec<I, O>.catchOut(block: (Throwable) -> O): NullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec catchOut block)
@@ -72,7 +72,7 @@ infix fun <I, O> NullableFieldCodec<I, O>.catchOut(block: (Throwable) -> O): Nul
  * Return a field codec derived from this one with
  * its name tagged with the given language [tag].
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableFieldCodec<I, O>.lang(tag: String): NullableFieldCodec<I, O> {
     if (tag.isEmpty()) return this
     return FieldCodec("$name#$tag", this)
@@ -82,7 +82,7 @@ infix fun <I, O> NullableFieldCodec<I, O>.lang(tag: String): NullableFieldCodec<
  * Create a new field codec with the given [name]
  * and backed by [this] codec.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableCodec<I, O>.at(name: String): NullableFieldCodec<I, O> {
     return FieldCodec(name, this)
 }
@@ -100,7 +100,7 @@ infix fun <I, O> NullableCodec<I, O>.at(name: String): NullableFieldCodec<I, O> 
  * }
  * ```
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> String.be(codec: NullableCodec<I, O>): NullableFieldCodec<I, O> {
     return FieldCodec(this, codec)
 }

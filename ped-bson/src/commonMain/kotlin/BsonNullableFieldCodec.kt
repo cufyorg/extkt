@@ -60,7 +60,7 @@ fun <I, O : BsonElement> FieldCodec(name: String, codec: NullableCodec<I, O>): B
 /**
  * Return a new codec backed by this codec that returns the given [defaultValue] when decoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.defaultIn(defaultValue: I): BsonNullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec defaultIn defaultValue)
@@ -69,7 +69,7 @@ infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.defaultIn(defaultVal
 /**
  * Return a new codec backed by this codec that returns the result of invoking the given [block] when decoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.catchIn(block: (Throwable) -> I): BsonNullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec catchIn block)
@@ -78,7 +78,7 @@ infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.catchIn(block: (Thro
 /**
  * Return a new codec backed by this codec that returns the given [defaultValue] when encoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.defaultOut(defaultValue: O): BsonNullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec defaultOut defaultValue)
@@ -87,7 +87,7 @@ infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.defaultOut(defaultVa
 /**
  * Return a new codec backed by this codec that returns the result of invoking the given [block] when encoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.catchOut(block: (Throwable) -> O): BsonNullableFieldCodec<I, O> {
     val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec catchOut block)
@@ -99,7 +99,7 @@ infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.catchOut(block: (Thr
  * Return a field codec derived from this one with
  * its name tagged with the given language [tag].
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.lang(tag: String): BsonNullableFieldCodec<I, O> {
     if (tag.isEmpty()) return this
     return FieldCodec("$name#$tag", this)
@@ -109,7 +109,7 @@ infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.lang(tag: String): B
  * Create a new field codec with the given [name]
  * and backed by [this] codec.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O : BsonElement> NullableCodec<I, O>.at(name: String): BsonNullableFieldCodec<I, O> {
     return FieldCodec(name, this)
 }
@@ -127,7 +127,7 @@ infix fun <I, O : BsonElement> NullableCodec<I, O>.at(name: String): BsonNullabl
  * }
  * ```
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O : BsonElement> String.be(codec: NullableCodec<I, O>): BsonNullableFieldCodec<I, O> {
     return FieldCodec(this, codec)
 }

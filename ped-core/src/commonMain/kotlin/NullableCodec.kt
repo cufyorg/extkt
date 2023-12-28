@@ -35,7 +35,7 @@ interface NullableCodec<I, O> : Codec<I?, O>
 /**
  * Return a new codec backed by this codec that returns the given [defaultValue] when decoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableCodec<I, O>.defaultIn(defaultValue: I): NullableCodec<I, O> {
     val codec = this
     return object : NullableCodec<I, O> {
@@ -54,7 +54,7 @@ infix fun <I, O> NullableCodec<I, O>.defaultIn(defaultValue: I): NullableCodec<I
 /**
  * Return a new codec backed by this codec that returns the result of invoking the given [block] when decoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableCodec<I, O>.catchIn(block: (Throwable) -> I): NullableCodec<I, O> {
     val codec = this
     return object : NullableCodec<I, O> {
@@ -73,7 +73,7 @@ infix fun <I, O> NullableCodec<I, O>.catchIn(block: (Throwable) -> I): NullableC
 /**
  * Return a new codec backed by this codec that returns the given [defaultValue] when encoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableCodec<I, O>.defaultOut(defaultValue: O): NullableCodec<I, O> {
     val codec = this
     return object : NullableCodec<I, O> {
@@ -92,7 +92,7 @@ infix fun <I, O> NullableCodec<I, O>.defaultOut(defaultValue: O): NullableCodec<
 /**
  * Return a new codec backed by this codec that returns the result of invoking the given [block] when encoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> NullableCodec<I, O>.catchOut(block: (Throwable) -> O): NullableCodec<I, O> {
     val codec = this
     return object : NullableCodec<I, O> {
@@ -121,7 +121,7 @@ infix fun <I, O> NullableCodec<I, O>.catchOut(block: (Throwable) -> O): Nullable
  */
 @JvmName("decodeInfixNullish")
 @JsName("decodeInfixNullish")
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> O?.decode(codec: NullableCodec<I, O>): I? {
     return decode(this, codec)
 }
@@ -137,7 +137,7 @@ infix fun <I, O> O?.decode(codec: NullableCodec<I, O>): I? {
  */
 @JvmName("decodeInfixNullable")
 @JsName("decodeInfixNullable")
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> O.decode(codec: NullableCodec<I, O>): I? {
     return decode(this, codec)
 }
@@ -152,7 +152,7 @@ infix fun <I, O> O.decode(codec: NullableCodec<I, O>): I? {
  */
 @JvmName("tryDecodeNullish")
 @JsName("tryDecodeNullish")
-@KpedMarker3
+@PedMarker0
 fun <I, O> tryDecode(value: O?, codec: NullableCodec<I, O>): Result<I?> {
     return tryDecodeAny(value, codec)
 }
@@ -167,7 +167,7 @@ fun <I, O> tryDecode(value: O?, codec: NullableCodec<I, O>): Result<I?> {
  */
 @JvmName("tryDecodeNullable")
 @JsName("tryDecodeNullable")
-@KpedMarker3
+@PedMarker0
 fun <I, O> tryDecode(value: O, codec: NullableCodec<I, O>): Result<I?> {
     return tryDecodeAny(value, codec)
 }
@@ -183,7 +183,7 @@ fun <I, O> tryDecode(value: O, codec: NullableCodec<I, O>): Result<I?> {
  */
 @JvmName("decodeNullish")
 @JsName("decodeNullish")
-@KpedMarker3
+@PedMarker0
 fun <I, O> decode(value: O?, codec: NullableCodec<I, O>): I? {
     return decodeAny(value, codec)
 }
@@ -199,7 +199,7 @@ fun <I, O> decode(value: O?, codec: NullableCodec<I, O>): I? {
  */
 @JvmName("decodeNullable")
 @JsName("decodeNullable")
-@KpedMarker3
+@PedMarker0
 fun <I, O> decode(value: O, codec: NullableCodec<I, O>): I? {
     return decodeAny(value, codec)
 }

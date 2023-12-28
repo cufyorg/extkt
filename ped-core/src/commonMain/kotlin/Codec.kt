@@ -56,7 +56,7 @@ interface Codec<I, O> {
 /**
  * Return a new codec backed by this codec that returns the given [defaultValue] when decoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> Codec<I, O>.defaultIn(defaultValue: I): Codec<I, O> {
     val codec = this
     return object : Codec<I, O> {
@@ -75,7 +75,7 @@ infix fun <I, O> Codec<I, O>.defaultIn(defaultValue: I): Codec<I, O> {
 /**
  * Return a new codec backed by this codec that returns the result of invoking the given [block] when decoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> Codec<I, O>.catchIn(block: (Throwable) -> I): Codec<I, O> {
     val codec = this
     return object : Codec<I, O> {
@@ -94,7 +94,7 @@ infix fun <I, O> Codec<I, O>.catchIn(block: (Throwable) -> I): Codec<I, O> {
 /**
  * Return a new codec backed by this codec that returns the given [defaultValue] when encoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> Codec<I, O>.defaultOut(defaultValue: O): Codec<I, O> {
     val codec = this
     return object : Codec<I, O> {
@@ -113,7 +113,7 @@ infix fun <I, O> Codec<I, O>.defaultOut(defaultValue: O): Codec<I, O> {
 /**
  * Return a new codec backed by this codec that returns the result of invoking the given [block] when encoding fails.
  */
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> Codec<I, O>.catchOut(block: (Throwable) -> O): Codec<I, O> {
     val codec = this
     return object : Codec<I, O> {
@@ -141,7 +141,7 @@ infix fun <I, O> Codec<I, O>.catchOut(block: (Throwable) -> O): Codec<I, O> {
  * @return the encoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> tryEncodeAny(value: Any?, codec: Codec<I, O>): Result<O> {
     return codec.encode(value)
 }
@@ -155,7 +155,7 @@ fun <I, O> tryEncodeAny(value: Any?, codec: Codec<I, O>): Result<O> {
  * @throws CodecException if encoding failed.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> encodeAny(value: Any?, codec: Codec<I, O>): O {
     return tryEncodeAny(value, codec).getOrElse {
         if (it is CodecException) throw it
@@ -173,7 +173,7 @@ fun <I, O> encodeAny(value: Any?, codec: Codec<I, O>): O {
  * @return the encoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> tryEncode(value: I, codec: Codec<I, O>): Result<O> {
     return tryEncodeAny(value, codec)
 }
@@ -187,7 +187,7 @@ fun <I, O> tryEncode(value: I, codec: Codec<I, O>): Result<O> {
  * @throws CodecException if encoding failed.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> encode(value: I, codec: Codec<I, O>): O {
     return encodeAny(value, codec)
 }
@@ -204,7 +204,7 @@ fun <I, O> encode(value: I, codec: Codec<I, O>): O {
  * @since 2.0.0
  */
 @JvmName("encodeInfix")
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> I.encode(codec: Codec<I, O>): O {
     return encode(this, codec)
 }
@@ -219,7 +219,7 @@ infix fun <I, O> I.encode(codec: Codec<I, O>): O {
  * @since 2.0.0
  */
 @JvmName("encodeAnyInfix")
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> Any?.encodeAny(codec: Codec<I, O>): O {
     return encodeAny(this, codec)
 }
@@ -236,7 +236,7 @@ infix fun <I, O> Any?.encodeAny(codec: Codec<I, O>): O {
  * @return the decoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> tryDecodeAny(value: Any?, codec: Codec<I, O>): Result<I> {
     return codec.decode(value)
 }
@@ -250,7 +250,7 @@ fun <I, O> tryDecodeAny(value: Any?, codec: Codec<I, O>): Result<I> {
  * @throws CodecException if decoding failed.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> decodeAny(value: Any?, codec: Codec<I, O>): I {
     return tryDecodeAny(value, codec).getOrElse {
         if (it is CodecException) throw it
@@ -268,7 +268,7 @@ fun <I, O> decodeAny(value: Any?, codec: Codec<I, O>): I {
  * @return the decoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> tryDecode(value: O, codec: Codec<I, O>): Result<I> {
     return tryDecodeAny(value, codec)
 }
@@ -282,7 +282,7 @@ fun <I, O> tryDecode(value: O, codec: Codec<I, O>): Result<I> {
  * @throws CodecException if decoding failed.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 fun <I, O> decode(value: O, codec: Codec<I, O>): I {
     return decodeAny(value, codec)
 }
@@ -299,7 +299,7 @@ fun <I, O> decode(value: O, codec: Codec<I, O>): I {
  * @since 2.0.0
  */
 @JvmName("decodeInfix")
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> O.decode(codec: Codec<I, O>): I {
     return decode(this, codec)
 }
@@ -314,7 +314,7 @@ infix fun <I, O> O.decode(codec: Codec<I, O>): I {
  * @since 2.0.0
  */
 @JvmName("decodeAnyInfix")
-@KpedMarker4
+@PedMarker3
 infix fun <I, O> Any?.decodeAny(codec: Codec<I, O>): I {
     return decodeAny(this, codec)
 }
@@ -334,7 +334,7 @@ infix fun <I, O> Any?.decodeAny(codec: Codec<I, O>): I {
  * @return the encoding/decoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <T> tryInlineCodecAny(value: Any?, block: (Any?) -> Result<T>): Result<T> {
     return block(value)
 }
@@ -351,7 +351,7 @@ inline fun <T> tryInlineCodecAny(value: Any?, block: (Any?) -> Result<T>): Resul
  * @return the encoding/decoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <T> tryInlineCodecAnyCatching(value: Any?, block: (Any?) -> T): Result<T> {
     return try {
         Result.success(block(value))
@@ -374,7 +374,7 @@ inline fun <T> tryInlineCodecAnyCatching(value: Any?, block: (Any?) -> T): Resul
  * @throws CodecException if encoding/decoding failed.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <T> inlineCodecAny(value: Any?, block: (Any?) -> Result<T>): T {
     return block(value).getOrElse {
         if (it is CodecException) throw it
@@ -393,7 +393,7 @@ inline fun <T> inlineCodecAny(value: Any?, block: (Any?) -> Result<T>): T {
  * @return the encoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <T> inlineCodecAnyCatching(value: Any?, block: (Any?) -> T): T {
     return try {
         block(value)
@@ -421,7 +421,7 @@ inline fun <T> inlineCodecAnyCatching(value: Any?, block: (Any?) -> T): T {
  * @return the encoding/decoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <reified T, U> tryInlineCodec(value: Any?, block: (T) -> Result<U>): Result<U> {
     return when (value) {
         is T -> block(value)
@@ -449,7 +449,7 @@ inline fun <reified T, U> tryInlineCodec(value: Any?, block: (T) -> Result<U>): 
  * @return the encoding/decoding result.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <reified T, U> tryInlineCodecCatching(value: Any?, block: (T) -> U): Result<U> {
     return tryInlineCodec<T, U>(value) {
         try {
@@ -477,7 +477,7 @@ inline fun <reified T, U> tryInlineCodecCatching(value: Any?, block: (T) -> U): 
  * @throws CodecException if encoding/decoding failed.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <reified T, U> inlineCodec(value: Any?, block: (T) -> Result<U>): U {
     return tryInlineCodec(value, block).getOrElse {
         if (it is CodecException) throw it
@@ -500,7 +500,7 @@ inline fun <reified T, U> inlineCodec(value: Any?, block: (T) -> Result<U>): U {
  * @throws CodecException if encoding/decoding failed.
  * @since 2.0.0
  */
-@KpedMarker3
+@PedMarker0
 inline fun <reified T, U> inlineCodecCatching(value: Any?, block: (T) -> U): U {
     // will always wrap errors as CodecException
     return tryInlineCodecCatching(value, block).getOrThrow()

@@ -16,7 +16,7 @@
 package org.cufy.bson
 
 /**
- * A marker for bson build functions.
+ * INTERNAL: A marker for bson build functions.
  *
  * @author LSafer
  * @since 2.0.0

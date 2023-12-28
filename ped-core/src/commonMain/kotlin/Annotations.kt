@@ -27,19 +27,19 @@ package org.cufy.ped
 annotation class ExperimentalKpedApi
 
 /**
- * A dsl marker for codec builder functions.
+ * INTERNAL: A dsl marker for codec builder functions.
  *
  * @author LSafer
  * @since 2.0.0
  */
 @DslMarker
-annotation class KpedMarker3
+annotation class PedMarker0
 
 /**
- * A dsl marker for codec builder functions.
+ * INTERNAL: A dsl marker for codec builder functions.
  *
  * @author LSafer
  * @since 2.0.0
  */
 @DslMarker
-annotation class KpedMarker4
+annotation class PedMarker3
