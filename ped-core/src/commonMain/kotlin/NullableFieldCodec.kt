@@ -27,19 +27,15 @@ package org.cufy.ped
  * @author LSafer
  * @since 2.0.0
  */
-interface FieldCodec<I, O> : Codec<I, O> {
-    /**
-     * The name of the field.
-     */
-    val name: String
-}
+interface NullableFieldCodec<I, O> : NullableCodec<I, O>, FieldCodec<I?, O>
 
 /**
  * Create a new [FieldCodec] with the given [name]
  * and backed by the given [codec].
  */
-fun <I, O> FieldCodec(name: String, codec: Codec<I, O>): FieldCodec<I, O> {
-    return object : FieldCodec<I, O>, Codec<I, O> by codec {
+@Suppress("FunctionName")
+fun <I, O> FieldCodec(name: String, codec: NullableCodec<I, O>): NullableFieldCodec<I, O> {
+    return object : NullableFieldCodec<I, O>, NullableCodec<I, O> by codec {
         override val name = name
     }
 }
@@ -47,47 +43,37 @@ fun <I, O> FieldCodec(name: String, codec: Codec<I, O>): FieldCodec<I, O> {
 /* ============= ------------------ ============= */
 
 @KpedMarker4
-infix fun <I, O> FieldCodec<I, O>.defaultIn(defaultValue: I): FieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I, O> NullableFieldCodec<I, O>.defaultIn(defaultValue: I): NullableFieldCodec<I, O> {
+    val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec defaultIn defaultValue)
 }
 
 @KpedMarker4
-infix fun <I, O> FieldCodec<I, O>.catchIn(block: (Throwable) -> I): FieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I, O> NullableFieldCodec<I, O>.catchIn(block: (Throwable) -> I): NullableFieldCodec<I, O> {
+    val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec catchIn block)
 }
 
 @KpedMarker4
-infix fun <I, O> FieldCodec<I, O>.defaultOut(defaultValue: O): FieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I, O> NullableFieldCodec<I, O>.defaultOut(defaultValue: O): NullableFieldCodec<I, O> {
+    val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec defaultOut defaultValue)
 }
 
 @KpedMarker4
-infix fun <I, O> FieldCodec<I, O>.catchOut(block: (Throwable) -> O): FieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I, O> NullableFieldCodec<I, O>.catchOut(block: (Throwable) -> O): NullableFieldCodec<I, O> {
+    val codec = this as NullableCodec<I, O>
     return FieldCodec(name, codec catchOut block)
 }
 
 /* ============= ------------------ ============= */
 
 /**
- * Return a string derived from this one with
- * its content tagged with the given language [tag].
- */
-@KpedMarker4
-infix fun String.lang(tag: String): String {
-    if (tag.isEmpty()) return this
-    return "$this#$tag"
-}
-
-/**
  * Return a field codec derived from this one with
  * its name tagged with the given language [tag].
  */
 @KpedMarker4
-infix fun <I, O> FieldCodec<I, O>.lang(tag: String): FieldCodec<I, O> {
+infix fun <I, O> NullableFieldCodec<I, O>.lang(tag: String): NullableFieldCodec<I, O> {
     if (tag.isEmpty()) return this
     return FieldCodec("$name#$tag", this)
 }
@@ -97,7 +83,7 @@ infix fun <I, O> FieldCodec<I, O>.lang(tag: String): FieldCodec<I, O> {
  * and backed by [this] codec.
  */
 @KpedMarker4
-infix fun <I, O> Codec<I, O>.at(name: String): FieldCodec<I, O> {
+infix fun <I, O> NullableCodec<I, O>.at(name: String): NullableFieldCodec<I, O> {
     return FieldCodec(name, this)
 }
 
@@ -115,7 +101,7 @@ infix fun <I, O> Codec<I, O>.at(name: String): FieldCodec<I, O> {
  * ```
  */
 @KpedMarker4
-infix fun <I, O> String.be(codec: Codec<I, O>): FieldCodec<I, O> {
+infix fun <I, O> String.be(codec: NullableCodec<I, O>): NullableFieldCodec<I, O> {
     return FieldCodec(this, codec)
 }
 

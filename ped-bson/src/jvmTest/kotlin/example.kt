@@ -1,6 +1,9 @@
 package org.cufy.ped
 
-import org.cufy.bson.*
+import org.cufy.bson.BsonDocument
+import org.cufy.bson.Id
+import org.cufy.bson.bson
+import org.cufy.bson.java
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -55,7 +58,7 @@ class ExampleTest {
     @Test
     fun `catchIn actually uses the fallback value`() {
         val nameSource = "Hello World".bson
-        val codec = Codecs.Int32 defaultIn 0
+        val codec = Bson.Int32 defaultIn 0
 
         val name = nameSource decodeAny codec
 
@@ -64,15 +67,15 @@ class ExampleTest {
 }
 
 object Document1 {
-    val Id = Codecs.Id<Document1>() at "_id"
-    val Name = Codecs.String at "name"
-    val Age = Codecs.Int32 at "age"
+    val Id = Bson.Id<Document1>() at "_id"
+    val Name = Bson.String at "name"
+    val Age = Bson.Int32 at "age"
 
     val Birthday = "birthday"
-        .be(Codecs.Int64.Nullable)
+        .be(Bson.Int64.Nullable)
 
     val Birthday1 = "birthday1"
-        .be(Codecs.Int64.Nullable)
+        .be(Bson.Int64.Nullable)
         .defaultIn(0)
         .catchIn { 0 }
 }

@@ -35,7 +35,7 @@ import kotlin.Result.Companion.success
 class BsonNullableCodec<I, O : BsonElement>(
     @Suppress("MemberVisibilityCanBePrivate")
     val codec: Codec<I, O>,
-) : Codec<I?, BsonElement> {
+) : NullableCodec<I, BsonElement> {
     override fun encode(value: Any?) =
         when (value) {
             null -> success(BsonNull)
@@ -66,107 +66,8 @@ val <I, O : BsonElement> Codec<I, O>.Nullable: BsonNullableCodec<I, O>
  *
  * Nullish values includes `null`, [BsonNull] and [BsonUndefined]
  */
-val <I, O : BsonElement> FieldCodec<I, O>.Nullable: FieldCodec<I?, BsonElement>
+val <I, O : BsonElement> FieldCodec<I, O>.Nullable: BsonNullableFieldCodec<I, BsonElement>
     get() = FieldCodec(name, (this as Codec<I, O>).Nullable)
-
-/**
- * Obtain a codec that always decodes nullish
- * values to `null` and encodes `null`
- * to [BsonNull] and uses this codec otherwise.
- *
- * Nullish values includes `null`, [BsonNull] and [BsonUndefined]
- */
-@OptIn(ExperimentalKpedApi::class)
-val <I, O : BsonElement> BsonFieldCodec<I, O>.Nullable: BsonFieldCodec<I?, BsonElement>
-    get() = BsonFieldCodec(name, (this as Codec<I, O>).Nullable)
-
-/**
- * Decode [this] value to [I] using the given [codec].
- *
- * @receiver the value to decode.
- * @param codec the codec to be used.
- * @return the decoded value.
- * @throws CodecException if decoding failed.
- * @since 2.0.0
- */
-@JvmName("decodeInfixNullish")
-@KpedMarker4
-infix fun <I, O : BsonElement> O?.decode(codec: BsonNullableCodec<I, O>): I? {
-    return decode(this, codec)
-}
-
-/**
- * Decode [this] value to [I] using the given [codec].
- *
- * @receiver the value to decode.
- * @param codec the codec to be used.
- * @return the decoded value.
- * @throws CodecException if decoding failed.
- * @since 2.0.0
- */
-@JvmName("decodeInfixNullable")
-@KpedMarker4
-infix fun <I, O : BsonElement> O.decode(codec: BsonNullableCodec<I, O>): I? {
-    return decode(this, codec)
-}
-
-/**
- * Decode the given [value] to [O] using the given [codec].
- *
- * @param value the value to decode.
- * @param codec the codec to be used.
- * @return the decoding result.
- * @since 2.0.0
- */
-@JvmName("tryDecodeNullish")
-@KpedMarker3
-fun <I, O : BsonElement> tryDecode(value: O?, codec: BsonNullableCodec<I, O>): Result<I?> {
-    return tryDecodeAny(value, codec)
-}
-
-/**
- * Decode the given [value] to [O] using the given [codec].
- *
- * @param value the value to decode.
- * @param codec the codec to be used.
- * @return the decoding result.
- * @since 2.0.0
- */
-@JvmName("tryDecodeNullable")
-@KpedMarker3
-fun <I, O : BsonElement> tryDecode(value: O, codec: BsonNullableCodec<I, O>): Result<I?> {
-    return tryDecodeAny(value, codec)
-}
-
-/**
- * Decode the given [value] to [O] using the given [codec].
- *
- * @param value the value to decode.
- * @param codec the codec to be used.
- * @return the decoded value.
- * @throws CodecException if decoding failed.
- * @since 2.0.0
- */
-@JvmName("decodeNullish")
-@KpedMarker3
-fun <I, O : BsonElement> decode(value: O?, codec: BsonNullableCodec<I, O>): I? {
-    return decodeAny(value, codec)
-}
-
-/**
- * Decode the given [value] to [O] using the given [codec].
- *
- * @param value the value to decode.
- * @param codec the codec to be used.
- * @return the decoded value.
- * @throws CodecException if decoding failed.
- * @since 2.0.0
- */
-@JvmName("decodeNullable")
-@KpedMarker3
-fun <I, O : BsonElement> decode(value: O, codec: BsonNullableCodec<I, O>): I? {
-    return decodeAny(value, codec)
-}
 
 /* ============= ------------------ ============= */
 
@@ -217,9 +118,8 @@ val <I, O : BsonElement> FieldCodec<I, O>.Array: BsonFieldCodec<List<I>, BsonArr
  * uses this codec to encode/decode each
  * individual item.
  */
-@OptIn(ExperimentalKpedApi::class)
 val <I, O : BsonElement> BsonFieldCodec<I, O>.Array: BsonFieldCodec<List<I>, BsonArray>
-    get() = BsonFieldCodec(name, (this as Codec<I, O>).Array)
+    get() = FieldCodec(name, (this as Codec<I, O>).Array)
 
 /* ============= ------------------ ============= */
 
