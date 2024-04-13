@@ -17,17 +17,6 @@ package org.cufy.bson
 
 /* ============= ------------------ ============= */
 
-typealias JavaBsonBoolean =
-        org.bson.BsonBoolean
-
-typealias JavaBsonUndefined =
-        org.bson.BsonUndefined
-
-typealias JavaBsonNull =
-        org.bson.BsonNull
-
-/* ============= ------------------ ============= */
-
 /**
  * Return the java version of this bson element.
  */

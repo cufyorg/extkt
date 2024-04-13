@@ -19,20 +19,6 @@ import java.math.BigDecimal
 
 /* ============= ------------------ ============= */
 
-typealias JavaBsonInt32 =
-        org.bson.BsonInt32
-
-typealias JavaBsonInt64 =
-        org.bson.BsonInt64
-
-typealias JavaBsonDouble =
-        org.bson.BsonDouble
-
-typealias JavaBsonDecimal128 =
-        org.bson.BsonDecimal128
-
-/* ============= ------------------ ============= */
-
 /**
  * Return the java version of this bson element.
  */

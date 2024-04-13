@@ -17,11 +17,6 @@ package org.cufy.bson
 
 /* ============= ------------------ ============= */
 
-typealias JavaBsonElement =
-        org.bson.BsonValue
-
-/* ============= ------------------ ============= */
-
 /**
  * Return the java version of this bson element.
  */

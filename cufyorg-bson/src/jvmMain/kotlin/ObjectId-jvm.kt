@@ -22,8 +22,6 @@ import java.util.*
 
 /* ============= ------------------ ============= */
 
-typealias JavaObjectId = org.bson.types.ObjectId
-
 @Suppress("NOTHING_TO_INLINE", "OVERRIDE_BY_INLINE")
 actual class ObjectId(val java: JavaObjectId) : Comparable<ObjectId> {
     //

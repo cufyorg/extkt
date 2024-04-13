@@ -17,11 +17,6 @@ package org.cufy.bson
 
 /* ============= ------------------ ============= */
 
-typealias JavaBsonRegExp =
-        org.bson.BsonRegularExpression
-
-/* ============= ------------------ ============= */
-
 /**
  * Return the java version of this bson element.
  */

@@ -21,8 +21,6 @@ import java.math.BigDecimal
 
 /* ============= ------------------ ============= */
 
-typealias JavaDecimal128 = org.bson.types.Decimal128
-
 @Suppress("NOTHING_TO_INLINE", "OVERRIDE_BY_INLINE")
 actual class Decimal128(val java: JavaDecimal128) : Number(), Comparable<Decimal128> {
     //

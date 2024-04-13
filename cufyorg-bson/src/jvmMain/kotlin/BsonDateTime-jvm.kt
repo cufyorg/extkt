@@ -19,11 +19,6 @@ import java.util.*
 
 /* ============= ------------------ ============= */
 
-typealias JavaBsonDateTime =
-        org.bson.BsonDateTime
-
-/* ============= ------------------ ============= */
-
 /**
  * Return a [BsonDateTime] with the given [value].
  *
