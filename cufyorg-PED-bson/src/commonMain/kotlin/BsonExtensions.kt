@@ -54,12 +54,3 @@ inline operator fun <I> Codec<I, BsonDocument>.invoke(block: BsonDocumentBlock):
 operator fun <I> BsonDocumentLike.get(codec: FieldCodec<I, out BsonElement>): I {
     return this[codec.name] decodeAny codec
 }
-
-/**
- * Get the value of the field with the name of the
- * given [codec] and decode it using the given [codec].
- */
-// DO NOT REMOVE! fixes wierd kotlin compiler issue
-operator fun <I> BsonDocumentLike.get(codec: BsonFieldCodec<I, out BsonElement>): I {
-    return this[codec.name] decodeAny codec
-}
