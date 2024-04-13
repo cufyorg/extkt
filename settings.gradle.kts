@@ -14,9 +14,6 @@ pluginManagement {
 
 rootProject.name = "cufyorg-serialization"
 
-include(":bson")
-include(":json")
-
 // include directories that starts with "cufyorg-"
 for (file in rootDir.listFiles().orEmpty()) {
     if (file.isDirectory && file.name.startsWith("cufyorg-")) {
