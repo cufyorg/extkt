@@ -28,57 +28,138 @@ inline val JsonPrimitive.stringOrNull get() = if (isString) content else null
 //
 
 /** if this json element is a json primitive, return it. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveOrNull get() = this as? JsonPrimitive
+@Deprecated("Use new API", ReplaceWith("asPrimitiveOrNull"))
+inline val JsonElement.jsonPrimitiveOrNull get() = asJsonPrimitiveOrNull
 
 /** if this json element is a json object, return it. Otherwise, return `null`. */
-inline val JsonElement.jsonObjectOrNull get() = this as? JsonObject
+@Deprecated("Use new API", ReplaceWith("asObjectOrNull"))
+inline val JsonElement.jsonObjectOrNull get() = asJsonObjectOrNull
 
 /** if this json element is a json array, return it. Otherwise, return `null`. */
-inline val JsonElement.jsonArrayOrNull get() = this as? JsonArray
+@Deprecated("Use new API", ReplaceWith("asJsonArrayOrNull"))
+inline val JsonElement.jsonArrayOrNull get() = asJsonArrayOrNull
+
+//
+
+/** if this json element is a json primitive, return it. Otherwise, fail. */
+inline val JsonElement.asJsonPrimitive: JsonPrimitive get() = this as JsonPrimitive
+
+/** if this json element is a json primitive, return it. Otherwise, return `null`. */
+inline val JsonElement.asJsonPrimitiveOrNull: JsonPrimitive? get() = this as? JsonPrimitive
+
+/** if this json element is a json object, return it. Otherwise, fail. */
+inline val JsonElement.asJsonObject: JsonObject get() = this as JsonObject
+
+/** if this json element is a json object, return it. Otherwise, return `null`. */
+inline val JsonElement.asJsonObjectOrNull: JsonObject? get() = this as? JsonObject
+
+/** if this json element is a json array, return it. Otherwise, fail. */
+inline val JsonElement.asJsonArray: JsonArray get() = this as JsonArray
+
+/** if this json element is a json array, return it. Otherwise, return `null`. */
+inline val JsonElement.asJsonArrayOrNull: JsonArray? get() = this as? JsonArray
 
 //
 
 /** if this json element is a json string, return its content. Otherwise, fail. */
-inline val JsonElement.jsonPrimitiveString get() = jsonPrimitive.string
+@Deprecated("Use new API", ReplaceWith("asString"))
+inline val JsonElement.jsonPrimitiveString get() = asString
 
 /** if this json element is a json string, return its content. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveStringOrNull get() = jsonPrimitiveOrNull?.stringOrNull
+@Deprecated("Use new API", ReplaceWith("asStringOrNull"))
+inline val JsonElement.jsonPrimitiveStringOrNull get() = asStringOrNull
 
 /** if this json element is a json number, return its content as [Int]. Otherwise, fail. */
-inline val JsonElement.jsonPrimitiveInt get() = jsonPrimitive.int
+@Deprecated("Use new API", ReplaceWith("asInt"))
+inline val JsonElement.jsonPrimitiveInt get() = asInt
 
 /** if this json element is a json number, return its content as [Int]. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveIntOrNull get() = jsonPrimitiveOrNull?.intOrNull
+@Deprecated("Use new API", ReplaceWith("asIntOrNull"))
+inline val JsonElement.jsonPrimitiveIntOrNull get() = asIntOrNull
 
 /** if this json element is a json number, return its content as [Long]. Otherwise, fail. */
-inline val JsonElement.jsonPrimitiveLong get() = jsonPrimitive.long
+@Deprecated("Use new API", ReplaceWith("asLong"))
+inline val JsonElement.jsonPrimitiveLong get() = asLong
 
 /** if this json element is a json number, return its content as [Long]. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveLongOrNull get() = jsonPrimitiveOrNull?.longOrNull
+@Deprecated("Use new API", ReplaceWith("asLongOrNull"))
+inline val JsonElement.jsonPrimitiveLongOrNull get() = asLongOrNull
 
 /** if this json element is a json number, return its content as [Double]. Otherwise, fail. */
-inline val JsonElement.jsonPrimitiveDouble get() = jsonPrimitive.double
+@Deprecated("Use new API", ReplaceWith("asDouble"))
+inline val JsonElement.jsonPrimitiveDouble get() = asDouble
 
 /** if this json element is a json number, return its content as [Double]. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveDoubleOrNull get() = jsonPrimitiveOrNull?.doubleOrNull
+@Deprecated("Use new API", ReplaceWith("asDoubleOrNull"))
+inline val JsonElement.jsonPrimitiveDoubleOrNull get() = asDoubleOrNull
 
 /** if this json element is a json number, return its content as [Float]. Otherwise, fail. */
-inline val JsonElement.jsonPrimitiveFloat get() = jsonPrimitive.float
+@Deprecated("Use new API", ReplaceWith("asFloat"))
+inline val JsonElement.jsonPrimitiveFloat get() = asFloat
 
 /** if this json element is a json number, return its content as [Float]. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveFloatOrNull get() = jsonPrimitiveOrNull?.floatOrNull
+@Deprecated("Use new API", ReplaceWith("asFloatOrNull"))
+inline val JsonElement.jsonPrimitiveFloatOrNull get() = asFloatOrNull
 
 /** if this json element is a json boolean, return its content. Otherwise, fail. */
-inline val JsonElement.jsonPrimitiveBoolean get() = jsonPrimitive.boolean
+@Deprecated("Use new API", ReplaceWith("asBoolean"))
+inline val JsonElement.jsonPrimitiveBoolean get() = asBoolean
 
 /** if this json element is a json boolean, return its content. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveBooleanOrNull get() = jsonPrimitiveOrNull?.booleanOrNull
+@Deprecated("Use new API", ReplaceWith("asBooleanOrNull"))
+inline val JsonElement.jsonPrimitiveBooleanOrNull get() = asBooleanOrNull
 
 /** if this json element is a json primitive, return its raw content. Otherwise, fail. */
-inline val JsonElement.jsonPrimitiveContent get() = jsonPrimitive.content
+@Deprecated("Use new API", ReplaceWith("asContentString"))
+inline val JsonElement.jsonPrimitiveContent get() = asContentString
 
 /** if this json element is a json primitive, return its raw content. Otherwise, return `null`. */
-inline val JsonElement.jsonPrimitiveContentOrNull get() = jsonPrimitiveOrNull?.contentOrNull
+@Deprecated("Use new API", ReplaceWith("asContentStringOrNull"))
+inline val JsonElement.jsonPrimitiveContentOrNull get() = asContentStringOrNull
+
+//
+
+/** if this json element is a json string, return its content. Otherwise, fail. */
+inline val JsonElement.asString: String get() = asJsonPrimitive.string
+
+/** if this json element is a json string, return its content. Otherwise, return `null`. */
+inline val JsonElement.asStringOrNull: String? get() = asJsonPrimitiveOrNull?.stringOrNull
+
+/** if this json element is a json number, return its content as [Int]. Otherwise, fail. */
+inline val JsonElement.asInt: Int get() = asJsonPrimitive.int
+
+/** if this json element is a json number, return its content as [Int]. Otherwise, return `null`. */
+inline val JsonElement.asIntOrNull: Int? get() = asJsonPrimitiveOrNull?.intOrNull
+
+/** if this json element is a json number, return its content as [Long]. Otherwise, fail. */
+inline val JsonElement.asLong: Long get() = asJsonPrimitive.long
+
+/** if this json element is a json number, return its content as [Long]. Otherwise, return `null`. */
+inline val JsonElement.asLongOrNull: Long? get() = asJsonPrimitiveOrNull?.longOrNull
+
+/** if this json element is a json number, return its content as [Double]. Otherwise, fail. */
+inline val JsonElement.asDouble: Double get() = asJsonPrimitive.double
+
+/** if this json element is a json number, return its content as [Double]. Otherwise, return `null`. */
+inline val JsonElement.asDoubleOrNull: Double? get() = asJsonPrimitiveOrNull?.doubleOrNull
+
+/** if this json element is a json number, return its content as [Float]. Otherwise, fail. */
+inline val JsonElement.asFloat: Float get() = asJsonPrimitive.float
+
+/** if this json element is a json number, return its content as [Float]. Otherwise, return `null`. */
+inline val JsonElement.asFloatOrNull: Float? get() = asJsonPrimitiveOrNull?.floatOrNull
+
+/** if this json element is a json boolean, return its content. Otherwise, fail. */
+inline val JsonElement.asBoolean: Boolean get() = asJsonPrimitive.boolean
+
+/** if this json element is a json boolean, return its content. Otherwise, return `null`. */
+inline val JsonElement.asBooleanOrNull: Boolean? get() = asJsonPrimitiveOrNull?.booleanOrNull
+
+/** if this json element is a json primitive, return its raw content. Otherwise, fail. */
+inline val JsonElement.asContentString: String get() = asJsonPrimitive.content
+
+/** if this json element is a json primitive, return its raw content. Otherwise, return `null`. */
+inline val JsonElement.asContentStringOrNull: String? get() = asJsonPrimitiveOrNull?.contentOrNull
 
 //
 
@@ -91,6 +172,12 @@ fun JsonPrimitive?.orJsonNull(): JsonPrimitive {
 fun JsonElement?.orJsonNull(): JsonElement {
     return this ?: JsonNull
 }
+
+/** if this json element reference is not null, return it. Otherwise, return [JsonNull]. */
+inline val JsonPrimitive?.orJsonNull get() = this ?: JsonNull
+
+/** if this json element reference is not null, return it. Otherwise, return [JsonNull]. */
+inline val JsonElement?.orJsonNull get() = this ?: JsonNull
 
 //
 
