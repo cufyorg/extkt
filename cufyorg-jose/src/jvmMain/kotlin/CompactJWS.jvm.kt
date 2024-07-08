@@ -40,7 +40,7 @@ actual fun CompactJWS.verify(jwks: Set<JWK>): JWT {
     val alg = h?.get("alg")?.asStringOrNull
 
     if (alg == "none")
-        return decode()
+        return unverified()
 
     val jwk = jwks.findVerify(kid, alg)
     jwk ?: throw IllegalArgumentException("jws verification failed: no matching key: kid=$kid; alg=$alg")
@@ -52,8 +52,8 @@ actual fun CompactJWS.verify(jwks: Set<JWK>): JWT {
 
 /* ============= ------------------ ============= */
 
-actual fun CompactJWS.decode(): JWT {
-    return jose4j_decode()
+actual fun CompactJWS.unverified(): JWT {
+    return jose4j_unverified()
 }
 
 /* ============= ------------------ ============= */

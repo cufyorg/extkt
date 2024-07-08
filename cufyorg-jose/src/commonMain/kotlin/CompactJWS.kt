@@ -117,6 +117,28 @@ fun JWT.signOrNull(jwks: JWKSet): CompactJWS? {
 /* ============= ------------------ ============= */
 
 /**
+ * Find suitable key in [jwks], sign JWT components
+ * and return JWS components.
+ *
+ * If signing fails, throw an [IllegalArgumentException].
+ */
+fun JWT.signToString(jwks: JWKSet): String {
+    return sign(jwks).value
+}
+
+/**
+ * Find suitable key in [jwks], sign JWT components
+ * and return JWS components.
+ *
+ * If signing fails, return `null`.
+ */
+fun JWT.signToStringOrNull(jwks: JWKSet): String? {
+    return signOrNull(jwks)?.value
+}
+
+/* ============= ------------------ ============= */
+
+/**
  * Decode JWS components, find matching key in [jwks],
  * verify signature and return JWT components.
  *
@@ -145,23 +167,69 @@ fun CompactJWS.verifyOrNull(jwks: JWKSet): JWT? {
 /* ============= ------------------ ============= */
 
 /**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return JWT components.
+ *
+ * If verification fails, throw an [IllegalArgumentException].
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ */
+fun String.verifyCompactJWS(jwks: JWKSet): JWT {
+    return decodeCompactJWS().verify(jwks)
+}
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return JWT components.
+ *
+ * If verification fails, return `null`.
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ */
+fun String.verifyCompactJWSOrNull(jwks: JWKSet): JWT? {
+    return decodeCompactJWSOrNull()?.verifyOrNull(jwks)
+}
+
+/* ============= ------------------ ============= */
+
+/**
  * Decode JWS components, without signature verification.
  *
  * If decoding fails, throw an [IllegalArgumentException].
  */
-expect fun CompactJWS.decode(): JWT
+expect fun CompactJWS.unverified(): JWT
 
 /**
  * Decode JWS components, without signature verification.
  *
  * If decoding fails, return `null`.
  */
-fun CompactJWS.decodeOrNull(): JWT? {
+fun CompactJWS.unverifiedOrNull(): JWT? {
     return try {
-        decode()
+        unverified()
     } catch (_: IllegalArgumentException) {
         return null
     }
+}
+
+/* ============= ------------------ ============= */
+
+/**
+ * Decode JWS components, without signature verification.
+ *
+ * If decoding fails, throw an [IllegalArgumentException].
+ */
+fun String.unverifiedCompactJWS(): JWT {
+    return decodeCompactJWS().unverified()
+}
+
+/**
+ * Decode JWS components, without signature verification.
+ *
+ * If decoding fails, return `null`.
+ */
+fun String.unverifiedCompactJWSOrNull(): JWT? {
+    return decodeCompactJWSOrNull()?.unverifiedOrNull()
 }
 
 /* ============= ------------------ ============= */

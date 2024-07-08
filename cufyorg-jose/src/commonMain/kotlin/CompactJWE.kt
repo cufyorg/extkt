@@ -133,7 +133,29 @@ fun JWT.encryptOrNull(jwks: JWKSet): CompactJWE? {
 /* ============= ------------------ ============= */
 
 /**
- * Decode JWS components, find matching key in [jwks],
+ * Find suitable key in [jwks], encrypt JWT components
+ * and return JWE components.
+ *
+ * If signing fails, throw an [IllegalArgumentException].
+ */
+fun JWT.encryptToString(jwks: JWKSet): String {
+    return encrypt(jwks).value
+}
+
+/**
+ * Find suitable key in [jwks], encrypt JWT components
+ * and return JWE components.
+ *
+ * If signing fails, return `null`.
+ */
+fun JWT.encryptToStringOrNull(jwks: JWKSet): String? {
+    return encryptOrNull(jwks)?.value
+}
+
+/* ============= ------------------ ============= */
+
+/**
+ * Decode JWE components, find matching key in [jwks],
  * decode payload and return JWT components.
  *
  * If decryption fails, throw an [IllegalArgumentException].
@@ -141,7 +163,7 @@ fun JWT.encryptOrNull(jwks: JWKSet): CompactJWE? {
 expect fun CompactJWE.decrypt(jwks: JWKSet): JWT
 
 /**
- * Decode JWS components, find matching key in [jwks],
+ * Decode JWE components, find matching key in [jwks],
  * decode payload and return JWT components.
  *
  * If decryption fails, return `null`.
@@ -152,6 +174,28 @@ fun CompactJWE.decryptOrNull(jwks: JWKSet): JWT? {
     } catch (_: IllegalArgumentException) {
         return null
     }
+}
+
+/* ============= ------------------ ============= */
+
+/**
+ * Decode JWE components, find matching key in [jwks],
+ * decode payload and return JWT components.
+ *
+ * If decryption fails, throw an [IllegalArgumentException].
+ */
+fun String.decryptCompactJWE(jwks: JWKSet): JWT {
+    return decodeCompactJWE().decrypt(jwks)
+}
+
+/**
+ * Decode JWE components, find matching key in [jwks],
+ * decode payload and return JWT components.
+ *
+ * If decryption fails, return `null`.
+ */
+fun String.decryptCompactJWEOrNull(jwks: JWKSet): JWT? {
+    return decodeCompactJWEOrNull()?.decryptOrNull(jwks)
 }
 
 /* ============= ------------------ ============= */

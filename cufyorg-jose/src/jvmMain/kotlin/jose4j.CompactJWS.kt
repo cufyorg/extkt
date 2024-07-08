@@ -56,7 +56,7 @@ internal fun CompactJWS.jose4j_verify(jwk: Jose4jJWK): JWT {
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun CompactJWS.jose4j_decode(): JWT {
+internal fun CompactJWS.jose4j_unverified(): JWT {
     val jose4j = JsonWebSignature()
     jose4j.apply(this)
     return jose4j.toJWT()
