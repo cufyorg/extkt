@@ -15,6 +15,11 @@
  */
 package org.cufy.jose
 
+import org.cufy.json.asJsonObjectOrNull
+import org.cufy.json.decodeJsonStringOrNull
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
+
 /* ============= ------------------ ============= */
 
 /**
@@ -53,6 +58,17 @@ data class CompactJWS(
             append('.')
             append(signature)
         }
+    }
+
+    /**
+     * The decoded payload of the jwt.
+     */
+    @OptIn(ExperimentalEncodingApi::class)
+    val decodedPayloadOrNull by lazy {
+        Base64.UrlSafe.decode(payload)
+            .decodeToString()
+            .decodeJsonStringOrNull()
+            ?.asJsonObjectOrNull
     }
 }
 
