@@ -19,6 +19,9 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
+private val EMPTY_JSON_OBJECT = JsonObject(emptyMap())
+private val EMPTY_JSON_ARRAY = JsonArray(emptyList())
+
 /**
  * A map containing only items of type [JsonElement].
  *
@@ -46,6 +49,20 @@ typealias JsonArrayLike = Iterable<JsonElement>
  * @since 2.0.0
  */
 typealias MutableJsonArrayLike = MutableList<JsonElement>
+
+/**
+ * Return an empty [JsonObject].
+ */
+fun JsonObject(): JsonObject {
+    return EMPTY_JSON_OBJECT
+}
+
+/**
+ * Return an empty [JsonArray].
+ */
+fun JsonArray(): JsonArray {
+    return EMPTY_JSON_ARRAY
+}
 
 /**
  * Construct a new json object using the given [block].
