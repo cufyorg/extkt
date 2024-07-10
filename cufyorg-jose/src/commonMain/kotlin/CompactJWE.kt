@@ -122,17 +122,21 @@ fun String.isCompactJWEQuick(): Boolean {
 /**
  * Find suitable key in [jwks], encrypt JWT components
  * and return JWE components.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-expect fun JWT.encryptCatching(jwks: JWKSet): Result<CompactJWE>
+expect fun JWT.encryptCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<CompactJWE>
 
 /**
  * Find suitable key in [jwks], encrypt JWT components
  * and return JWE components.
  *
  * If signing fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.encrypt(jwks: JWKSet): CompactJWE {
-    return encryptCatching(jwks).getOrThrow()
+fun JWT.encrypt(jwks: JWKSet, defaultConstraints: Boolean = true): CompactJWE {
+    return encryptCatching(jwks, defaultConstraints).getOrThrow()
 }
 
 /**
@@ -140,9 +144,11 @@ fun JWT.encrypt(jwks: JWKSet): CompactJWE {
  * and return JWE components.
  *
  * If signing fails, return `null`.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.encryptOrNull(jwks: JWKSet): CompactJWE? {
-    return encryptCatching(jwks).getOrNull()
+fun JWT.encryptOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): CompactJWE? {
+    return encryptCatching(jwks, defaultConstraints).getOrNull()
 }
 
 /* ============= ------------------ ============= */
@@ -152,9 +158,11 @@ fun JWT.encryptOrNull(jwks: JWKSet): CompactJWE? {
  * and return JWE components.
  *
  * If signing fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.encryptToStringCatching(jwks: JWKSet): Result<String> {
-    return encryptCatching(jwks).map { it.value }
+fun JWT.encryptToStringCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<String> {
+    return encryptCatching(jwks, defaultConstraints).map { it.value }
 }
 
 /**
@@ -162,9 +170,11 @@ fun JWT.encryptToStringCatching(jwks: JWKSet): Result<String> {
  * and return JWE components.
  *
  * If signing fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.encryptToString(jwks: JWKSet): String {
-    return encrypt(jwks).value
+fun JWT.encryptToString(jwks: JWKSet, defaultConstraints: Boolean = true): String {
+    return encrypt(jwks, defaultConstraints).value
 }
 
 /**
@@ -172,9 +182,11 @@ fun JWT.encryptToString(jwks: JWKSet): String {
  * and return JWE components.
  *
  * If signing fails, return `null`.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.encryptToStringOrNull(jwks: JWKSet): String? {
-    return encryptOrNull(jwks)?.value
+fun JWT.encryptToStringOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): String? {
+    return encryptOrNull(jwks, defaultConstraints)?.value
 }
 
 /* ============= ------------------ ============= */
@@ -182,17 +194,21 @@ fun JWT.encryptToStringOrNull(jwks: JWKSet): String? {
 /**
  * Decode JWE components, find matching key in [jwks],
  * decode payload and return JWT components.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-expect fun CompactJWE.decryptCatching(jwks: JWKSet): Result<JWT>
+expect fun CompactJWE.decryptCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT>
 
 /**
  * Decode JWE components, find matching key in [jwks],
  * decode payload and return JWT components.
  *
  * If decryption fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun CompactJWE.decrypt(jwks: JWKSet): JWT {
-    return decryptCatching(jwks).getOrThrow()
+fun CompactJWE.decrypt(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
+    return decryptCatching(jwks, defaultConstraints).getOrThrow()
 }
 
 /**
@@ -200,9 +216,11 @@ fun CompactJWE.decrypt(jwks: JWKSet): JWT {
  * decode payload and return JWT components.
  *
  * If decryption fails, return `null`.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun CompactJWE.decryptOrNull(jwks: JWKSet): JWT? {
-    return decryptCatching(jwks).getOrNull()
+fun CompactJWE.decryptOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
+    return decryptCatching(jwks, defaultConstraints).getOrNull()
 }
 
 /* ============= ------------------ ============= */
@@ -212,10 +230,12 @@ fun CompactJWE.decryptOrNull(jwks: JWKSet): JWT? {
  * decode payload and return JWT components.
  *
  * If decryption fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.decryptCompactJWECatching(jwks: JWKSet): Result<JWT> {
+fun String.decryptCompactJWECatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT> {
     return decodeCompactJWECatching().fold(
-        { it.decryptCatching(jwks) },
+        { it.decryptCatching(jwks, defaultConstraints) },
         { failure(it) }
     )
 }
@@ -225,9 +245,11 @@ fun String.decryptCompactJWECatching(jwks: JWKSet): Result<JWT> {
  * decode payload and return JWT components.
  *
  * If decryption fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.decryptCompactJWE(jwks: JWKSet): JWT {
-    return decodeCompactJWE().decrypt(jwks)
+fun String.decryptCompactJWE(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
+    return decodeCompactJWE().decrypt(jwks, defaultConstraints)
 }
 
 /**
@@ -235,9 +257,11 @@ fun String.decryptCompactJWE(jwks: JWKSet): JWT {
  * decode payload and return JWT components.
  *
  * If decryption fails, return `null`.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.decryptCompactJWEOrNull(jwks: JWKSet): JWT? {
-    return decodeCompactJWEOrNull()?.decryptOrNull(jwks)
+fun String.decryptCompactJWEOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
+    return decodeCompactJWEOrNull()?.decryptOrNull(jwks, defaultConstraints)
 }
 
 /* ============= ------------------ ============= */

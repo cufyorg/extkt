@@ -16,6 +16,7 @@
 package org.cufy.jose
 
 import org.cufy.json.asStringOrNull
+import org.jose4j.jwa.AlgorithmConstraints
 import org.jose4j.jwk.PublicJsonWebKey
 import org.jose4j.jws.JsonWebSignature
 import org.jose4j.lang.JoseException
@@ -24,7 +25,7 @@ import kotlin.Result.Companion.failure
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK): Result<CompactJWS> {
+internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<CompactJWS> {
     if (jwk.java !is PublicJsonWebKey)
         return failure(IllegalArgumentException("jwt signing failed: key is not an asymmetric key"))
 
@@ -32,6 +33,9 @@ internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK): Result<CompactJWS> {
         ?: defaultSigAlg(jwk.kty, jwk.use, jwk.alg)
 
     val jose4j = JsonWebSignature()
+    if (!defaultConstraints) {
+        jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+    }
     jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.privateKey
     jose4j.setHeader("kid", jwk.kid)
@@ -43,8 +47,11 @@ internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK): Result<CompactJWS> {
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun CompactJWS.jose4j_verifyCatching(jwk: Jose4jJWK): Result<JWT> {
+internal fun CompactJWS.jose4j_verifyCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<JWT> {
     val jose4j = JsonWebSignature()
+    if (!defaultConstraints) {
+        jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+    }
     jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.key
 

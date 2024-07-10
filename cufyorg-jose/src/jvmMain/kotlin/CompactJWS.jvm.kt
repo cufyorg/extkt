@@ -20,7 +20,7 @@ import kotlin.Result.Companion.failure
 
 /* ============= ------------------ ============= */
 
-actual fun JWT.signCatching(jwks: JWKSet): Result<CompactJWS> {
+actual fun JWT.signCatching(jwks: JWKSet, defaultConstraints: Boolean): Result<CompactJWS> {
     val kid = header["kid"]?.asStringOrNull
     val alg = header["alg"]?.asStringOrNull
 
@@ -28,26 +28,30 @@ actual fun JWT.signCatching(jwks: JWKSet): Result<CompactJWS> {
     jwk ?: return failure(IllegalArgumentException("jws signing failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_signCatching(jwk)
+        is Jose4jJWK -> jose4j_signCatching(jwk, defaultConstraints)
     }
 }
 
 /* ============= ------------------ ============= */
 
-actual fun CompactJWS.verifyCatching(jwks: Set<JWK>): Result<JWT> {
+actual fun CompactJWS.verifyCatching(jwks: Set<JWK>, defaultConstraints: Boolean): Result<JWT> {
     val h = this.decodedHeaderOrNull
 
     val kid = h?.get("kid")?.asStringOrNull
     val alg = h?.get("alg")?.asStringOrNull
 
-    if (alg == "none")
+    if (alg == "none") {
+        if (defaultConstraints)
+            return failure(IllegalArgumentException("jws verification failed: algorithm 'none' is not allowed"))
+
         return unverifiedCatching()
+    }
 
     val jwk = jwks.findVerify(kid, alg)
     jwk ?: return failure(IllegalArgumentException("jws verification failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_verifyCatching(jwk)
+        is Jose4jJWK -> jose4j_verifyCatching(jwk, defaultConstraints)
     }
 }
 

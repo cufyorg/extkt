@@ -16,19 +16,24 @@
 package org.cufy.jose
 
 import org.cufy.json.asStringOrNull
+import org.jose4j.jwa.AlgorithmConstraints
 import org.jose4j.jwe.JsonWebEncryption
 import kotlin.Result.Companion.failure
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun JWT.jose4j_encryptCatching(jwk: Jose4jJWK): Result<CompactJWE> {
+internal fun JWT.jose4j_encryptCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<CompactJWE> {
     val alg = header["alg"]?.asStringOrNull
         ?: defaultEncAlg(jwk.kty, jwk.use, jwk.alg)
     val enc = header["enc"]?.asStringOrNull
         ?: defaultEncEnc(jwk.kty, jwk.use, jwk.alg)
 
     val jose4j = JsonWebEncryption()
+    if (!defaultConstraints) {
+        jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+        jose4j.setContentEncryptionAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+    }
     jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.key
     jose4j.setHeader("kid", jwk.kid)
@@ -41,8 +46,12 @@ internal fun JWT.jose4j_encryptCatching(jwk: Jose4jJWK): Result<CompactJWE> {
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun CompactJWE.jose4j_decryptCatching(jwk: Jose4jJWK): Result<JWT> {
+internal fun CompactJWE.jose4j_decryptCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<JWT> {
     val jose4j = JsonWebEncryption()
+    if (!defaultConstraints) {
+        jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+        jose4j.setContentEncryptionAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+    }
     jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.key
 

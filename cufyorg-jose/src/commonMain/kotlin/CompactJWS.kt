@@ -121,17 +121,21 @@ fun String.isCompactJWSQuick(): Boolean {
 /**
  * Find suitable key in [jwks], sign JWT components
  * and return JWS components.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-expect fun JWT.signCatching(jwks: JWKSet): Result<CompactJWS>
+expect fun JWT.signCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<CompactJWS>
 
 /**
  * Find suitable key in [jwks], sign JWT components
  * and return JWS components.
  *
  * If signing fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.sign(jwks: JWKSet): CompactJWS {
-    return signCatching(jwks).getOrThrow()
+fun JWT.sign(jwks: JWKSet, defaultConstraints: Boolean = true): CompactJWS {
+    return signCatching(jwks, defaultConstraints).getOrThrow()
 }
 
 /**
@@ -139,9 +143,11 @@ fun JWT.sign(jwks: JWKSet): CompactJWS {
  * and return JWS components.
  *
  * If signing fails, return `null`.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.signOrNull(jwks: JWKSet): CompactJWS? {
-    return signCatching(jwks).getOrNull()
+fun JWT.signOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): CompactJWS? {
+    return signCatching(jwks, defaultConstraints).getOrNull()
 }
 
 /* ============= ------------------ ============= */
@@ -149,9 +155,11 @@ fun JWT.signOrNull(jwks: JWKSet): CompactJWS? {
 /**
  * Find suitable key in [jwks], sign JWT components
  * and return JWS components.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.signToStringCatching(jwks: JWKSet): Result<String> {
-    return signCatching(jwks).map { it.value }
+fun JWT.signToStringCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<String> {
+    return signCatching(jwks, defaultConstraints).map { it.value }
 }
 
 /**
@@ -159,9 +167,11 @@ fun JWT.signToStringCatching(jwks: JWKSet): Result<String> {
  * and return JWS components.
  *
  * If signing fails, throw an [IllegalArgumentException].
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.signToString(jwks: JWKSet): String {
-    return sign(jwks).value
+fun JWT.signToString(jwks: JWKSet, defaultConstraints: Boolean = true): String {
+    return sign(jwks, defaultConstraints).value
 }
 
 /**
@@ -169,9 +179,11 @@ fun JWT.signToString(jwks: JWKSet): String {
  * and return JWS components.
  *
  * If signing fails, return `null`.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun JWT.signToStringOrNull(jwks: JWKSet): String? {
-    return signOrNull(jwks)?.value
+fun JWT.signToStringOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): String? {
+    return signOrNull(jwks, defaultConstraints)?.value
 }
 
 /* ============= ------------------ ============= */
@@ -181,8 +193,10 @@ fun JWT.signToStringOrNull(jwks: JWKSet): String? {
  * verify signature and return JWT components.
  *
  * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-expect fun CompactJWS.verifyCatching(jwks: JWKSet): Result<JWT>
+expect fun CompactJWS.verifyCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT>
 
 /**
  * Decode JWS components, find matching key in [jwks],
@@ -191,9 +205,11 @@ expect fun CompactJWS.verifyCatching(jwks: JWKSet): Result<JWT>
  * If verification fails, throw an [IllegalArgumentException].
  *
  * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun CompactJWS.verify(jwks: JWKSet): JWT {
-    return verifyCatching(jwks).getOrThrow()
+fun CompactJWS.verify(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
+    return verifyCatching(jwks, defaultConstraints).getOrThrow()
 }
 
 /**
@@ -203,9 +219,11 @@ fun CompactJWS.verify(jwks: JWKSet): JWT {
  * If verification fails, return `null`.
  *
  * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun CompactJWS.verifyOrNull(jwks: JWKSet): JWT? {
-    return verifyCatching(jwks).getOrNull()
+fun CompactJWS.verifyOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
+    return verifyCatching(jwks, defaultConstraints).getOrNull()
 }
 
 /* ============= ------------------ ============= */
@@ -215,10 +233,12 @@ fun CompactJWS.verifyOrNull(jwks: JWKSet): JWT? {
  * verify signature and return JWT components.
  *
  * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.verifyCompactJWSCatching(jwks: JWKSet): Result<JWT> {
+fun String.verifyCompactJWSCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT> {
     return decodeCompactJWSCatching().fold(
-        { it.verifyCatching(jwks) },
+        { it.verifyCatching(jwks, defaultConstraints) },
         { failure(it) }
     )
 }
@@ -230,9 +250,11 @@ fun String.verifyCompactJWSCatching(jwks: JWKSet): Result<JWT> {
  * If verification fails, throw an [IllegalArgumentException].
  *
  * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.verifyCompactJWS(jwks: JWKSet): JWT {
-    return decodeCompactJWS().verify(jwks)
+fun String.verifyCompactJWS(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
+    return decodeCompactJWS().verify(jwks, defaultConstraints)
 }
 
 /**
@@ -242,9 +264,11 @@ fun String.verifyCompactJWS(jwks: JWKSet): JWT {
  * If verification fails, return `null`.
  *
  * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.verifyCompactJWSOrNull(jwks: JWKSet): JWT? {
-    return decodeCompactJWSOrNull()?.verifyOrNull(jwks)
+fun String.verifyCompactJWSOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
+    return decodeCompactJWSOrNull()?.verifyOrNull(jwks, defaultConstraints)
 }
 
 /* ============= ------------------ ============= */

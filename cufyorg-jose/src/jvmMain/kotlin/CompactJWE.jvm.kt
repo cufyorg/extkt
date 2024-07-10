@@ -20,7 +20,7 @@ import kotlin.Result.Companion.failure
 
 /* ============= ------------------ ============= */
 
-actual fun JWT.encryptCatching(jwks: JWKSet): Result<CompactJWE> {
+actual fun JWT.encryptCatching(jwks: JWKSet, defaultConstraints: Boolean): Result<CompactJWE> {
     val kid = header["kid"]?.asStringOrNull
     val alg = header["alg"]?.asStringOrNull
 
@@ -28,13 +28,13 @@ actual fun JWT.encryptCatching(jwks: JWKSet): Result<CompactJWE> {
     jwk ?: return failure(IllegalArgumentException("jwe encryption failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_encryptCatching(jwk)
+        is Jose4jJWK -> jose4j_encryptCatching(jwk, defaultConstraints)
     }
 }
 
 /* ============= ------------------ ============= */
 
-actual fun CompactJWE.decryptCatching(jwks: Set<JWK>): Result<JWT> {
+actual fun CompactJWE.decryptCatching(jwks: Set<JWK>, defaultConstraints: Boolean): Result<JWT> {
     val h = this.decodedHeaderOrNull
 
     val kid = h?.get("kid")?.asStringOrNull
@@ -44,7 +44,7 @@ actual fun CompactJWE.decryptCatching(jwks: Set<JWK>): Result<JWT> {
     jwk ?: return failure(IllegalArgumentException("jwe decryption failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_decryptCatching(jwk)
+        is Jose4jJWK -> jose4j_decryptCatching(jwk, defaultConstraints)
     }
 }
 
