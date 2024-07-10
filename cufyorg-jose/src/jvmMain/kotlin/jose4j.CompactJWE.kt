@@ -17,35 +17,36 @@ package org.cufy.jose
 
 import org.cufy.json.asStringOrNull
 import org.jose4j.jwe.JsonWebEncryption
+import kotlin.Result.Companion.failure
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun JWT.jose4j_encrypt(jwk: Jose4jJWK): CompactJWE {
+internal fun JWT.jose4j_encryptCatching(jwk: Jose4jJWK): Result<CompactJWE> {
     val alg = header["alg"]?.asStringOrNull
         ?: defaultEncAlg(jwk.kty, jwk.use, jwk.alg)
     val enc = header["enc"]?.asStringOrNull
         ?: defaultEncEnc(jwk.kty, jwk.use, jwk.alg)
 
     val jose4j = JsonWebEncryption()
-    jose4j.apply(this)
+    jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.key
     jose4j.setHeader("kid", jwk.kid)
     jose4j.setHeader("alg", alg)
     jose4j.setHeader("enc", enc)
 
-    return jose4j.encryptToCompactJWE()
+    return jose4j.encryptToCompactJWECatching()
 }
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun CompactJWE.jose4j_decrypt(jwk: Jose4jJWK): JWT {
+internal fun CompactJWE.jose4j_decryptCatching(jwk: Jose4jJWK): Result<JWT> {
     val jose4j = JsonWebEncryption()
-    jose4j.apply(this)
+    jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.key
 
-    return jose4j.toJWT()
+    return jose4j.toJWTCatching()
 }
 
 /* ============= ------------------ ============= */

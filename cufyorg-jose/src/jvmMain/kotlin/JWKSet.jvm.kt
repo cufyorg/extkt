@@ -17,12 +17,8 @@ package org.cufy.jose
 
 /* ============= ------------------ ============= */
 
-actual fun String.decodeJWKSet(): JWKSet {
-    return decodeJose4jJWKSet()
-}
-
-actual fun String.decodeJWKSetOrNull(): JWKSet? {
-    return decodeJose4jJWKSetOrNull()
+actual fun String.decodeJWKSetCatching(): Result<JWKSet> {
+    return decodeJose4jJWKSetCatching()
 }
 
 /* ============= ------------------ ============= */

@@ -16,34 +16,35 @@
 package org.cufy.jose
 
 import org.cufy.json.asStringOrNull
+import kotlin.Result.Companion.failure
 
 /* ============= ------------------ ============= */
 
-actual fun JWT.encrypt(jwks: JWKSet): CompactJWE {
+actual fun JWT.encryptCatching(jwks: JWKSet): Result<CompactJWE> {
     val kid = header["kid"]?.asStringOrNull
     val alg = header["alg"]?.asStringOrNull
 
     val jwk = jwks.findEncrypt(kid, alg)
-    jwk ?: throw IllegalArgumentException("jwe encryption failed: no matching key: kid=$kid; alg=$alg")
+    jwk ?: return failure(IllegalArgumentException("jwe encryption failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_encrypt(jwk)
+        is Jose4jJWK -> jose4j_encryptCatching(jwk)
     }
 }
 
 /* ============= ------------------ ============= */
 
-actual fun CompactJWE.decrypt(jwks: Set<JWK>): JWT {
+actual fun CompactJWE.decryptCatching(jwks: Set<JWK>): Result<JWT> {
     val h = this.decodedHeaderOrNull
 
     val kid = h?.get("kid")?.asStringOrNull
     val alg = h?.get("alg")?.asStringOrNull
 
     val jwk = jwks.findEncrypt(kid, alg)
-    jwk ?: throw IllegalArgumentException("jwe decryption failed: no matching key: kid=$kid; alg=$alg")
+    jwk ?: return failure(IllegalArgumentException("jwe decryption failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_decrypt(jwk)
+        is Jose4jJWK -> jose4j_decryptCatching(jwk)
     }
 }
 

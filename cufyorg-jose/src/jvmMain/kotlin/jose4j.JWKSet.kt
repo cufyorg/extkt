@@ -18,12 +18,11 @@ package org.cufy.jose
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
-import org.cufy.json.asJsonArrayOrNull
-import org.cufy.json.asJsonObjectOrNull
-import org.cufy.json.decodeJsonString
-import org.cufy.json.decodeJsonStringOrNull
+import org.cufy.json.decodeJson
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.lang.JoseException
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
@@ -31,71 +30,38 @@ typealias Jose4jJWKSet = Set<Jose4jJWK>
 
 /* ============= ------------------ ============= */
 
-fun String.decodeJose4jJWKSet(): Jose4jJWKSet {
-    val jose4jSet = try {
+fun String.decodeJose4jJWKSetCatching(): Result<Jose4jJWKSet> {
+    val parametersJavaSet = try {
         JsonWebKeySet(this).jsonWebKeys
     } catch (e: JoseException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
     val parametersSet = try {
-        decodeJsonString()
+        decodeJson()
     } catch (e: SerializationException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
 
     if (parametersSet !is JsonObject)
-        throw IllegalArgumentException("Bad JWKSet. Expected JsonObject")
+        return failure(IllegalArgumentException("Bad JWKSet. Expected JsonObject"))
 
     val parametersSetKeys = parametersSet["keys"]
 
     if (parametersSetKeys !is JsonArray)
-        throw IllegalArgumentException("Bad JWKSet keys. Expected JsonArray")
+        return failure(IllegalArgumentException("Bad JWKSet keys. Expected JsonArray"))
 
     val count = parametersSetKeys.size
-    return buildSet(count) {
+    return success(buildSet(count) {
         for (i in 0..<count) {
-            val jose4j = jose4jSet[i]
+            val parametersJava = parametersJavaSet[i]
             val parameters = parametersSetKeys[i]
 
             if (parameters !is JsonObject)
-                throw IllegalArgumentException("Bad JWK. Expected JsonObject")
+                return failure(IllegalArgumentException("Bad JWK. Expected JsonObject"))
 
-            this += Jose4jJWK(
-                java = jose4j,
-                parameters = parameters,
-            )
+            this += Jose4jJWK(parametersJava, parameters)
         }
-    }
-}
-
-fun String.decodeJose4jJWKSetOrNull(): Jose4jJWKSet? {
-    val jose4jSet = try {
-        JsonWebKeySet(this).jsonWebKeys
-    } catch (e: JoseException) {
-        return null
-    }
-    val parametersSet = decodeJsonStringOrNull()
-        ?.asJsonObjectOrNull
-        ?: return null
-
-    val parametersSetKeys = parametersSet["keys"]
-        ?.asJsonArrayOrNull
-        ?: return null
-
-    val count = parametersSetKeys.size
-    return buildSet(count) {
-        for (i in 0..<count) {
-            val jose4j = jose4jSet[i]
-            val parameters = parametersSetKeys[i]
-                .asJsonObjectOrNull
-                ?: return null
-
-            this += Jose4jJWK(
-                java = jose4j,
-                parameters = parameters,
-            )
-        }
-    }
+    })
 }
 
 /* ============= ------------------ ============= */

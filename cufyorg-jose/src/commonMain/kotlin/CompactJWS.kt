@@ -16,7 +16,9 @@
 package org.cufy.jose
 
 import org.cufy.json.asJsonObjectOrNull
-import org.cufy.json.decodeJsonStringOrNull
+import org.cufy.json.decodeJsonOrNull
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -67,7 +69,7 @@ data class CompactJWS(
     val decodedPayloadOrNull by lazy {
         Base64.UrlSafe.decode(payload)
             .decodeToString()
-            .decodeJsonStringOrNull()
+            .decodeJsonOrNull()
             ?.asJsonObjectOrNull
     }
 }
@@ -76,12 +78,20 @@ data class CompactJWS(
 
 /**
  * Split this string into JWS Compact Serialization Components.
+ */
+fun String.decodeCompactJWSCatching(): Result<CompactJWS> {
+    return decodeCompactJWSOrNull()
+        ?.let { success(it) }
+        ?: failure(IllegalArgumentException("Malformed JWS was presented"))
+}
+
+/**
+ * Split this string into JWS Compact Serialization Components.
  *
  * If decode fails, throw an [IllegalArgumentException].
  */
 fun String.decodeCompactJWS(): CompactJWS {
-    return decodeCompactJWSOrNull()
-        ?: throw IllegalArgumentException("Malformed JWS was presented")
+    return decodeCompactJWSCatching().getOrThrow()
 }
 
 /**
@@ -111,10 +121,18 @@ fun String.isCompactJWSQuick(): Boolean {
 /**
  * Find suitable key in [jwks], sign JWT components
  * and return JWS components.
+ */
+expect fun JWT.signCatching(jwks: JWKSet): Result<CompactJWS>
+
+/**
+ * Find suitable key in [jwks], sign JWT components
+ * and return JWS components.
  *
  * If signing fails, throw an [IllegalArgumentException].
  */
-expect fun JWT.sign(jwks: JWKSet): CompactJWS
+fun JWT.sign(jwks: JWKSet): CompactJWS {
+    return signCatching(jwks).getOrThrow()
+}
 
 /**
  * Find suitable key in [jwks], sign JWT components
@@ -123,14 +141,18 @@ expect fun JWT.sign(jwks: JWKSet): CompactJWS
  * If signing fails, return `null`.
  */
 fun JWT.signOrNull(jwks: JWKSet): CompactJWS? {
-    return try {
-        sign(jwks)
-    } catch (_: IllegalArgumentException) {
-        return null
-    }
+    return signCatching(jwks).getOrNull()
 }
 
 /* ============= ------------------ ============= */
+
+/**
+ * Find suitable key in [jwks], sign JWT components
+ * and return JWS components.
+ */
+fun JWT.signToStringCatching(jwks: JWKSet): Result<String> {
+    return signCatching(jwks).map { it.value }
+}
 
 /**
  * Find suitable key in [jwks], sign JWT components
@@ -158,11 +180,21 @@ fun JWT.signToStringOrNull(jwks: JWKSet): String? {
  * Decode JWS components, find matching key in [jwks],
  * verify signature and return JWT components.
  *
+ * > If the algorithm is set to `none`, no verification will be done.
+ */
+expect fun CompactJWS.verifyCatching(jwks: JWKSet): Result<JWT>
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return JWT components.
+ *
  * If verification fails, throw an [IllegalArgumentException].
  *
  * > If the algorithm is set to `none`, no verification will be done.
  */
-expect fun CompactJWS.verify(jwks: JWKSet): JWT
+fun CompactJWS.verify(jwks: JWKSet): JWT {
+    return verifyCatching(jwks).getOrThrow()
+}
 
 /**
  * Decode JWS components, find matching key in [jwks],
@@ -173,14 +205,23 @@ expect fun CompactJWS.verify(jwks: JWKSet): JWT
  * > If the algorithm is set to `none`, no verification will be done.
  */
 fun CompactJWS.verifyOrNull(jwks: JWKSet): JWT? {
-    return try {
-        verify(jwks)
-    } catch (_: IllegalArgumentException) {
-        return null
-    }
+    return verifyCatching(jwks).getOrNull()
 }
 
 /* ============= ------------------ ============= */
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return JWT components.
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ */
+fun String.verifyCompactJWSCatching(jwks: JWKSet): Result<JWT> {
+    return decodeCompactJWSCatching().fold(
+        { it.verifyCatching(jwks) },
+        { failure(it) }
+    )
+}
 
 /**
  * Decode JWS components, find matching key in [jwks],
@@ -210,10 +251,17 @@ fun String.verifyCompactJWSOrNull(jwks: JWKSet): JWT? {
 
 /**
  * Decode JWS components, without signature verification.
+ */
+expect fun CompactJWS.unverifiedCatching(): Result<JWT>
+
+/**
+ * Decode JWS components, without signature verification.
  *
  * If decoding fails, throw an [IllegalArgumentException].
  */
-expect fun CompactJWS.unverified(): JWT
+fun CompactJWS.unverified(): JWT {
+    return unverifiedCatching().getOrThrow()
+}
 
 /**
  * Decode JWS components, without signature verification.
@@ -221,14 +269,22 @@ expect fun CompactJWS.unverified(): JWT
  * If decoding fails, return `null`.
  */
 fun CompactJWS.unverifiedOrNull(): JWT? {
-    return try {
-        unverified()
-    } catch (_: IllegalArgumentException) {
-        return null
-    }
+    return unverifiedCatching().getOrNull()
 }
 
 /* ============= ------------------ ============= */
+
+/**
+ * Decode JWS components, without signature verification.
+ *
+ * If decoding fails, throw an [IllegalArgumentException].
+ */
+fun String.unverifiedCompactJWSCatching(): Result<JWT> {
+    return decodeCompactJWSCatching().fold(
+        { it.unverifiedCatching() },
+        { failure(it) }
+    )
+}
 
 /**
  * Decode JWS components, without signature verification.

@@ -17,162 +17,155 @@ package org.cufy.jose
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.*
-import org.cufy.json.decodeJsonString
-import org.cufy.json.encodeToJsonString
+import org.cufy.json.decodeJson
+import org.cufy.json.encodeToString
 import org.jose4j.jwe.JsonWebEncryption
-import org.jose4j.jwk.JsonWebKey
-import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jws.JsonWebSignature
 import org.jose4j.jwx.Headers
 import org.jose4j.jwx.JsonWebStructure
 import org.jose4j.lang.JoseException
 import java.math.BigDecimal
 import java.math.BigInteger
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
-fun JsonWebStructure.apply(jwt: JWT) {
-    this.headers.apply(jwt.header)
-    this.payload = jwt.payload.encodeToJsonString()
+fun JsonWebStructure.applyCatching(jwt: JWT): Result<Unit> {
+    this.headers.applyCatching(jwt.header).onFailure { return failure(it) }
+    this.payload = jwt.payload.encodeToString()
+    return success(Unit)
 }
 
-fun JsonWebSignature.apply(compact: CompactJWS) {
+fun JsonWebSignature.applyCatching(compact: CompactJWS): Result<Unit> {
     try {
         this.compactSerialization = compact.value
+        return success(Unit)
     } catch (e: JoseException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
 }
 
-fun JsonWebEncryption.apply(compact: CompactJWE) {
+fun JsonWebEncryption.applyCatching(compact: CompactJWE): Result<Unit> {
     try {
         this.compactSerialization = compact.value
+        return success(Unit)
     } catch (e: JoseException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
 }
 
-fun JsonWebStructure.toJWT(): JWT {
+fun JsonWebStructure.toJWTCatching(): Result<JWT> {
     val header = this.headers.toJsonObject()
     val payload = try {
-        this.payload.decodeJsonString()
+        this.payload.decodeJson()
     } catch (e: SerializationException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
 
     if (payload !is JsonObject)
-        throw IllegalArgumentException("Bad JWT payload. Expected JsonObject")
+        return failure(IllegalArgumentException("Bad JWT payload. Expected JsonObject"))
 
-    // return
-    return JWT(
-        header = header,
-        payload = payload,
-    )
+    return success(JWT(header, payload))
 }
 
-fun JsonWebSignature.signToCompactJWS(): CompactJWS {
-    val iterator = try {
-        this.compactSerialization.split(".").iterator()
+fun JsonWebSignature.signToCompactJWSCatching(): Result<CompactJWS> {
+    val compactSerialization = try {
+        compactSerialization
     } catch (e: JoseException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
-    return CompactJWS(
-        header = iterator.next(),
-        payload = iterator.next(),
-        signature = iterator.next(),
-    )
+
+    return compactSerialization.decodeCompactJWSCatching()
 }
 
-fun JsonWebEncryption.encryptToCompactJWE(): CompactJWE {
-    val iterator = try {
-        this.compactSerialization.split(".").iterator()
+fun JsonWebEncryption.encryptToCompactJWECatching(): Result<CompactJWE> {
+    val compactSerialization = try {
+        compactSerialization
     } catch (e: JoseException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
-    return CompactJWE(
-        header = iterator.next(),
-        encryptedKey = iterator.next(),
-        initializationVector = iterator.next(),
-        ciphertext = iterator.next(),
-        authenticationTag = iterator.next(),
-    )
-}
 
-fun JsonWebKey.toJWK(): JWK {
-    val level = JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE
-    val parameters = toParams(level).jose4j_toJsonElement()
-    return Jose4jJWK(this, parameters)
-}
-
-fun JsonWebKeySet.toJWKSet(): JWKSet {
-    return jsonWebKeys.mapTo(mutableSetOf()) { it.toJWK() }
+    return compactSerialization.decodeCompactJWECatching()
 }
 
 /* ============= ------------------ ============= */
 
 fun Headers.toJsonObject(): JsonObject {
     return fullHeaderAsJsonString
-        .decodeJsonString()
+        .decodeJson()
         .jsonObject
 }
 
-fun Headers.apply(element: JsonObject) {
+fun Headers.applyCatching(element: JsonObject): Result<Unit> {
     for ((name, value) in element) {
-        setObjectHeaderValue(name, value.jose4j_toJavaObject())
+        val valueJava = value.jose4j_toJavaObjectCatching().getOrElse { return failure(it) }
+
+        setObjectHeaderValue(name, valueJava)
     }
+
+    return success(Unit)
 }
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun JsonObject.jose4j_toJavaObject(): Map<String, *> {
-    return mapValues { it.value.jose4j_toJavaObject() }
+internal fun JsonObject.jose4j_toJavaObjectCatching(): Result<Map<String, *>> {
+    return success(mapValues {
+        it.value.jose4j_toJavaObjectCatching().getOrElse { return failure(it) }
+    })
 }
 
 @Suppress("FunctionName")
-internal fun JsonArray.jose4j_toJavaObject(): List<*> {
-    return map { it.jose4j_toJavaObject() }
+internal fun JsonArray.jose4j_toJavaObjectCatching(): Result<List<*>> {
+    return success(map {
+        it.jose4j_toJavaObjectCatching().getOrElse { return failure(it) }
+    })
 }
 
 @Suppress("FunctionName")
-internal fun JsonElement.jose4j_toJavaObject(): Any? {
+internal fun JsonElement.jose4j_toJavaObjectCatching(): Result<Any?> {
     return when (this) {
-        is JsonNull -> null
+        is JsonNull -> success(null)
         is JsonPrimitive -> when {
-            isString -> content
-            content == "true" -> true
-            content == "false" -> false
-            '.' in content -> doubleOrNull ?: BigDecimal(content)
-            else -> longOrNull ?: BigInteger(content)
+            isString -> success(content)
+            content == "true" -> success(true)
+            content == "false" -> success(false)
+            '.' in content -> runCatching { doubleOrNull ?: BigDecimal(content) }
+            else -> runCatching { longOrNull ?: BigInteger(content) }
         }
 
-        is JsonArray -> jose4j_toJavaObject()
-        is JsonObject -> jose4j_toJavaObject()
+        is JsonArray -> jose4j_toJavaObjectCatching()
+        is JsonObject -> jose4j_toJavaObjectCatching()
     }
 }
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun Map<*, *>.jose4j_toJsonElement(): JsonObject {
-    return JsonObject(entries.associate { "$it" to it.value.jose4j_toJsonElement() })
+internal fun Map<*, *>.jose4j_toJsonElementCatching(): Result<JsonObject> {
+    return success(JsonObject(entries.associate {
+        "$it" to it.value.jose4j_toJsonElementCatching().getOrElse { return failure(it) }
+    }))
 }
 
 @Suppress("FunctionName")
-internal fun List<*>.jose4j_toJsonElement(): JsonArray {
-    return JsonArray(map { it.jose4j_toJsonElement() })
+internal fun List<*>.jose4j_toJsonElementCatching(): Result<JsonArray> {
+    return success(JsonArray(map {
+        it.jose4j_toJsonElementCatching().getOrElse { return failure(it) }
+    }))
 }
 
 @Suppress("FunctionName")
-internal fun Any?.jose4j_toJsonElement(): JsonElement {
+internal fun Any?.jose4j_toJsonElementCatching(): Result<JsonElement> {
     return when (this) {
-        null -> JsonNull
-        is CharSequence -> JsonPrimitive(toString())
-        is Boolean -> JsonPrimitive(this)
-        is Number -> JsonPrimitive(this)
-        is List<*> -> jose4j_toJsonElement()
-        is Map<*, *> -> jose4j_toJsonElement()
-        else -> error("Couldn't convert ${this::class} to JsonElement")
+        null -> success(JsonNull)
+        is CharSequence -> success(JsonPrimitive(toString()))
+        is Boolean -> success(JsonPrimitive(this))
+        is Number -> success(JsonPrimitive(this))
+        is List<*> -> jose4j_toJsonElementCatching()
+        is Map<*, *> -> jose4j_toJsonElementCatching()
+        else -> failure(IllegalArgumentException("Couldn't convert ${this::class} to JsonElement"))
     }
 }
 

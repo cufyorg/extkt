@@ -79,32 +79,50 @@ expect sealed interface JWK {
 
 /**
  * Construct a new [JWK] using the given [parameters].
+ */
+expect fun createJWKCatching(parameters: JsonObject): Result<JWK>
+
+/**
+ * Construct a new [JWK] using the given [parameters].
  *
  * If construction fails, throw an [IllegalArgumentException].
  */
-expect fun createJWK(parameters: JsonObject): JWK
+fun createJWK(parameters: JsonObject): JWK {
+    return createJWKCatching(parameters).getOrThrow()
+}
 
 /**
  * Construct a new [JWK] using the given [parameters].
  *
  * If construction fails, return `null`.
  */
-expect fun createJWKOrNull(parameters: JsonObject): JWK?
+fun createJWKOrNull(parameters: JsonObject): JWK? {
+    return createJWKCatching(parameters).getOrNull()
+}
 
 /* ============= ------------------ ============= */
+
+/**
+ * Decode this string into a [JWK].
+ */
+expect fun String.decodeJWKCatching(): Result<JWK>
 
 /**
  * Decode this string into a [JWK].
  *
  * If decoding fails, throw an [IllegalArgumentException].
  */
-expect fun String.decodeJWK(): JWK
+fun String.decodeJWK(): JWK {
+    return decodeJWKCatching().getOrThrow()
+}
 
 /**
  * Decode this string into a [JWK].
  *
  * If decoding fails, return `null`.
  */
-expect fun String.decodeJWKOrNull(): JWK?
+fun String.decodeJWKOrNull(): JWK? {
+    return decodeJWKCatching().getOrNull()
+}
 
 /* ============= ------------------ ============= */

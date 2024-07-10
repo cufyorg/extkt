@@ -16,12 +16,21 @@
 package org.cufy.jose
 
 import kotlinx.serialization.json.JsonObject
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
 typealias JWKSet = Set<JWK>
 
 /* ============= ------------------ ============= */
+
+/**
+ * Construct a new [JWKSet] using the given [parameters].
+ */
+fun createJWKSetCatching(vararg parameters: JsonObject): Result<JWKSet> {
+    return createJWKSetCatching(parameters.asList())
+}
 
 /**
  * Construct a new [JWKSet] using the given [parameters].
@@ -45,11 +54,20 @@ fun createJWKSetOrNull(vararg parameters: JsonObject): JWKSet? {
 
 /**
  * Construct a new [JWKSet] using the given [parameters].
+ */
+fun createJWKSetCatching(parameters: Iterable<JsonObject>): Result<JWKSet> {
+    return success(parameters.mapTo(mutableSetOf()) {
+        createJWKCatching(it).getOrElse { return failure(it) }
+    })
+}
+
+/**
+ * Construct a new [JWKSet] using the given [parameters].
  *
  * If construction fails, throw an [IllegalArgumentException].
  */
 fun createJWKSet(parameters: Iterable<JsonObject>): JWKSet {
-    return parameters.mapTo(mutableSetOf()) { createJWK(it) }
+    return createJWKSetCatching(parameters).getOrThrow()
 }
 
 /**
@@ -58,30 +76,33 @@ fun createJWKSet(parameters: Iterable<JsonObject>): JWKSet {
  * If construction fails, return `null`.
  */
 fun createJWKSetOrNull(parameters: Iterable<JsonObject>): JWKSet? {
-    return buildSet {
-        for (it in parameters) {
-            val jwk = createJWKOrNull(it)
-            jwk ?: return null
-            add(jwk)
-        }
-    }
+    return createJWKSetCatching(parameters).getOrNull()
 }
 
 /* ============= ------------------ ============= */
 
 /**
  * Decode this string into a [JWKSet].
+ */
+expect fun String.decodeJWKSetCatching(): Result<JWKSet>
+
+/**
+ * Decode this string into a [JWKSet].
  *
  * If decoding fails, throw an [IllegalArgumentException].
  */
-expect fun String.decodeJWKSet(): JWKSet
+fun String.decodeJWKSet(): JWKSet {
+    return decodeJWKSetCatching().getOrThrow()
+}
 
 /**
  * Decode this string into a [JWKSet].
  *
  * If construction fails, return `null`.
  */
-expect fun String.decodeJWKSetOrNull(): JWKSet?
+fun String.decodeJWKSetOrNull(): JWKSet? {
+    return decodeJWKSetCatching().getOrNull()
+}
 
 /* ============= ------------------ ============= */
 

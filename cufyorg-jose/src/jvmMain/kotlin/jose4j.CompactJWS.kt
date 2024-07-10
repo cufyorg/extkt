@@ -18,48 +18,55 @@ package org.cufy.jose
 import org.cufy.json.asStringOrNull
 import org.jose4j.jwk.PublicJsonWebKey
 import org.jose4j.jws.JsonWebSignature
+import org.jose4j.lang.JoseException
+import kotlin.Result.Companion.failure
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun JWT.jose4j_sign(jwk: Jose4jJWK): CompactJWS {
+internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK): Result<CompactJWS> {
     if (jwk.java !is PublicJsonWebKey)
-        throw IllegalArgumentException("jwt signing failed: key is not an asymmetric key")
+        return failure(IllegalArgumentException("jwt signing failed: key is not an asymmetric key"))
 
     val alg = header["alg"]?.asStringOrNull
         ?: defaultSigAlg(jwk.kty, jwk.use, jwk.alg)
 
     val jose4j = JsonWebSignature()
-    jose4j.apply(this)
+    jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.privateKey
     jose4j.setHeader("kid", jwk.kid)
     jose4j.setHeader("alg", alg)
 
-    return jose4j.signToCompactJWS()
+    return jose4j.signToCompactJWSCatching()
 }
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun CompactJWS.jose4j_verify(jwk: Jose4jJWK): JWT {
+internal fun CompactJWS.jose4j_verifyCatching(jwk: Jose4jJWK): Result<JWT> {
     val jose4j = JsonWebSignature()
-    jose4j.apply(this)
-
+    jose4j.applyCatching(this).onFailure { return failure(it) }
     jose4j.key = jwk.java.key
 
-    if (!jose4j.verifySignature())
-        throw IllegalArgumentException("jws verification failed: invalid signature")
+    val isVerified = try {
+        jose4j.verifySignature()
+    } catch (e: JoseException) {
+        return failure(e)
+    }
 
-    return jose4j.toJWT()
+    if (!isVerified)
+        return failure(IllegalArgumentException("jws verification failed: invalid signature"))
+
+    return jose4j.toJWTCatching()
 }
 
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun CompactJWS.jose4j_unverified(): JWT {
+internal fun CompactJWS.jose4j_unverifiedCatching(): Result<JWT> {
     val jose4j = JsonWebSignature()
-    jose4j.apply(this)
-    return jose4j.toJWT()
+    jose4j.applyCatching(this).onFailure { return failure(it) }
+    return jose4j.toJWTCatching()
 }
 
 /* ============= ------------------ ============= */

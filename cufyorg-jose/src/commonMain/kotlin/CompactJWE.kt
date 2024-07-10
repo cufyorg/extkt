@@ -15,6 +15,9 @@
  */
 package org.cufy.jose
 
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
+
 /* ============= ------------------ ============= */
 
 /**
@@ -74,12 +77,20 @@ data class CompactJWE(
 
 /**
  * Split this string into JWE Compact Serialization Components.
+ */
+fun String.decodeCompactJWECatching(): Result<CompactJWE> {
+    return decodeCompactJWEOrNull()
+        ?.let { success(it) }
+        ?: failure(IllegalArgumentException("Malformed JWE was presented"))
+}
+
+/**
+ * Split this string into JWE Compact Serialization Components.
  *
  * If decode fails, throw an [IllegalArgumentException].
  */
 fun String.decodeCompactJWE(): CompactJWE {
-    return decodeCompactJWEOrNull()
-        ?: throw IllegalArgumentException("Malformed JWE was presented")
+    return decodeCompactJWECatching().getOrThrow()
 }
 
 /**
@@ -111,10 +122,18 @@ fun String.isCompactJWEQuick(): Boolean {
 /**
  * Find suitable key in [jwks], encrypt JWT components
  * and return JWE components.
+ */
+expect fun JWT.encryptCatching(jwks: JWKSet): Result<CompactJWE>
+
+/**
+ * Find suitable key in [jwks], encrypt JWT components
+ * and return JWE components.
  *
  * If signing fails, throw an [IllegalArgumentException].
  */
-expect fun JWT.encrypt(jwks: JWKSet): CompactJWE
+fun JWT.encrypt(jwks: JWKSet): CompactJWE {
+    return encryptCatching(jwks).getOrThrow()
+}
 
 /**
  * Find suitable key in [jwks], encrypt JWT components
@@ -123,14 +142,20 @@ expect fun JWT.encrypt(jwks: JWKSet): CompactJWE
  * If signing fails, return `null`.
  */
 fun JWT.encryptOrNull(jwks: JWKSet): CompactJWE? {
-    return try {
-        encrypt(jwks)
-    } catch (_: IllegalArgumentException) {
-        return null
-    }
+    return encryptCatching(jwks).getOrNull()
 }
 
 /* ============= ------------------ ============= */
+
+/**
+ * Find suitable key in [jwks], encrypt JWT components
+ * and return JWE components.
+ *
+ * If signing fails, throw an [IllegalArgumentException].
+ */
+fun JWT.encryptToStringCatching(jwks: JWKSet): Result<String> {
+    return encryptCatching(jwks).map { it.value }
+}
 
 /**
  * Find suitable key in [jwks], encrypt JWT components
@@ -157,10 +182,18 @@ fun JWT.encryptToStringOrNull(jwks: JWKSet): String? {
 /**
  * Decode JWE components, find matching key in [jwks],
  * decode payload and return JWT components.
+ */
+expect fun CompactJWE.decryptCatching(jwks: JWKSet): Result<JWT>
+
+/**
+ * Decode JWE components, find matching key in [jwks],
+ * decode payload and return JWT components.
  *
  * If decryption fails, throw an [IllegalArgumentException].
  */
-expect fun CompactJWE.decrypt(jwks: JWKSet): JWT
+fun CompactJWE.decrypt(jwks: JWKSet): JWT {
+    return decryptCatching(jwks).getOrThrow()
+}
 
 /**
  * Decode JWE components, find matching key in [jwks],
@@ -169,14 +202,23 @@ expect fun CompactJWE.decrypt(jwks: JWKSet): JWT
  * If decryption fails, return `null`.
  */
 fun CompactJWE.decryptOrNull(jwks: JWKSet): JWT? {
-    return try {
-        decrypt(jwks)
-    } catch (_: IllegalArgumentException) {
-        return null
-    }
+    return decryptCatching(jwks).getOrNull()
 }
 
 /* ============= ------------------ ============= */
+
+/**
+ * Decode JWE components, find matching key in [jwks],
+ * decode payload and return JWT components.
+ *
+ * If decryption fails, throw an [IllegalArgumentException].
+ */
+fun String.decryptCompactJWECatching(jwks: JWKSet): Result<JWT> {
+    return decodeCompactJWECatching().fold(
+        { it.decryptCatching(jwks) },
+        { failure(it) }
+    )
+}
 
 /**
  * Decode JWE components, find matching key in [jwks],

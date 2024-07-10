@@ -16,44 +16,45 @@
 package org.cufy.jose
 
 import org.cufy.json.asStringOrNull
+import kotlin.Result.Companion.failure
 
 /* ============= ------------------ ============= */
 
-actual fun JWT.sign(jwks: JWKSet): CompactJWS {
+actual fun JWT.signCatching(jwks: JWKSet): Result<CompactJWS> {
     val kid = header["kid"]?.asStringOrNull
     val alg = header["alg"]?.asStringOrNull
 
     val jwk = jwks.findSign(kid, alg)
-    jwk ?: throw IllegalArgumentException("jws signing failed: no matching key: kid=$kid; alg=$alg")
+    jwk ?: return failure(IllegalArgumentException("jws signing failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_sign(jwk)
+        is Jose4jJWK -> jose4j_signCatching(jwk)
     }
 }
 
 /* ============= ------------------ ============= */
 
-actual fun CompactJWS.verify(jwks: Set<JWK>): JWT {
+actual fun CompactJWS.verifyCatching(jwks: Set<JWK>): Result<JWT> {
     val h = this.decodedHeaderOrNull
 
     val kid = h?.get("kid")?.asStringOrNull
     val alg = h?.get("alg")?.asStringOrNull
 
     if (alg == "none")
-        return unverified()
+        return unverifiedCatching()
 
     val jwk = jwks.findVerify(kid, alg)
-    jwk ?: throw IllegalArgumentException("jws verification failed: no matching key: kid=$kid; alg=$alg")
+    jwk ?: return failure(IllegalArgumentException("jws verification failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_verify(jwk)
+        is Jose4jJWK -> jose4j_verifyCatching(jwk)
     }
 }
 
 /* ============= ------------------ ============= */
 
-actual fun CompactJWS.unverified(): JWT {
-    return jose4j_unverified()
+actual fun CompactJWS.unverifiedCatching(): Result<JWT> {
+    return jose4j_unverifiedCatching()
 }
 
 /* ============= ------------------ ============= */

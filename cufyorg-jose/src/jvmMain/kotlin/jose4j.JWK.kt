@@ -17,11 +17,11 @@ package org.cufy.jose
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.JsonObject
-import org.cufy.json.asJsonObjectOrNull
-import org.cufy.json.decodeJsonString
-import org.cufy.json.decodeJsonStringOrNull
+import org.cufy.json.decodeJson
 import org.jose4j.jwk.JsonWebKey
 import org.jose4j.lang.JoseException
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
@@ -38,71 +38,29 @@ data class Jose4jJWK(
 
 /* ============= ------------------ ============= */
 
-fun createJose4jJWK(source: JsonObject): Jose4jJWK {
-    val parametersJava = source.jose4j_toJavaObject()
+fun createJose4jJWKCatching(parameters: JsonObject): Result<Jose4jJWK> {
+    val parametersJava = parameters.jose4j_toJavaObjectCatching().getOrElse { return failure(it) }
     val java = try {
         JsonWebKey.Factory.newJwk(parametersJava)
     } catch (e: JoseException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
-    return Jose4jJWK(
-        java = java,
-        parameters = source,
-    )
-}
-
-fun createJose4jJWKOrNull(source: JsonObject): Jose4jJWK? {
-    val parametersJava = source.jose4j_toJavaObject()
-    val java = try {
-        JsonWebKey.Factory.newJwk(parametersJava)
-    } catch (_: JoseException) {
-        return null
-    }
-    return Jose4jJWK(
-        java = java,
-        parameters = source,
-    )
+    return success(Jose4jJWK(java, parameters))
 }
 
 /* ============= ------------------ ============= */
 
-fun String.decodeJose4jJWK(): Jose4jJWK {
+fun String.decodeJose4jJWKCatching(): Result<Jose4jJWK> {
     val parameters = try {
-        decodeJsonString()
+        decodeJson()
     } catch (e: SerializationException) {
-        throw IllegalArgumentException(e)
+        return failure(e)
     }
 
     if (parameters !is JsonObject)
-        throw IllegalArgumentException("Bad JWK. Expected JsonObject")
+        return failure(IllegalArgumentException("Bad JWK. Expected JsonObject"))
 
-    val parametersJava = parameters.jose4j_toJavaObject()
-    val java = try {
-        JsonWebKey.Factory.newJwk(parametersJava)
-    } catch (e: JoseException) {
-        throw IllegalArgumentException(e)
-    }
-
-    return Jose4jJWK(
-        java = java,
-        parameters = parameters,
-    )
-}
-
-fun String.decodeJose4jJWKOrNull(): JWK? {
-    val parameters = decodeJsonStringOrNull()
-        ?.asJsonObjectOrNull
-        ?: return null
-    val parametersJava = parameters.jose4j_toJavaObject()
-    val java = try {
-        JsonWebKey.Factory.newJwk(parametersJava)
-    } catch (_: JoseException) {
-        return null
-    }
-    return Jose4jJWK(
-        java = java,
-        parameters = parameters,
-    )
+    return createJose4jJWKCatching(parameters)
 }
 
 /* ============= ------------------ ============= */

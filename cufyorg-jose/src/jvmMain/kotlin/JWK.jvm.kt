@@ -16,6 +16,10 @@
 package org.cufy.jose
 
 import kotlinx.serialization.json.JsonObject
+import org.jose4j.jwk.JsonWebKey
+import org.jose4j.jwk.JsonWebKeySet
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
@@ -32,22 +36,46 @@ actual sealed interface JWK {
 
 /* ============= ------------------ ============= */
 
-actual fun createJWK(parameters: JsonObject): JWK {
-    return createJose4jJWK(parameters)
+fun JsonWebKey.toJWKCatching(): Result<JWK> {
+    val level = JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE
+    val parameters = toParams(level).jose4j_toJsonElementCatching().getOrElse { return failure(it) }
+    return success(Jose4jJWK(this, parameters))
 }
 
-actual fun createJWKOrNull(parameters: JsonObject): JWK? {
-    return createJose4jJWKOrNull(parameters)
+fun JsonWebKey.toJWK(): JWK {
+    return toJWKCatching().getOrThrow()
+}
+
+fun JsonWebKey.toJWKOrNull(): JWK? {
+    return toJWKCatching().getOrNull()
 }
 
 /* ============= ------------------ ============= */
 
-actual fun String.decodeJWK(): JWK {
-    return decodeJose4jJWK()
+fun JsonWebKeySet.toJWKSetCatching(): Result<JWKSet> {
+    return success(jsonWebKeys.mapTo(mutableSetOf()) {
+        it.toJWKCatching().getOrElse { return failure(it) }
+    })
 }
 
-actual fun String.decodeJWKOrNull(): JWK? {
-    return decodeJose4jJWKOrNull()
+fun JsonWebKeySet.toJWKSet(): JWKSet {
+    return toJWKSetCatching().getOrThrow()
+}
+
+fun JsonWebKeySet.toJWKSetOrNull(): JWKSet? {
+    return toJWKSetCatching().getOrNull()
+}
+
+/* ============= ------------------ ============= */
+
+actual fun createJWKCatching(parameters: JsonObject): Result<JWK> {
+    return createJose4jJWKCatching(parameters)
+}
+
+/* ============= ------------------ ============= */
+
+actual fun String.decodeJWKCatching(): Result<JWK> {
+    return decodeJose4jJWKCatching()
 }
 
 /* ============= ------------------ ============= */

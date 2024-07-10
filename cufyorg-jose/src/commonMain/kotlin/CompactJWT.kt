@@ -16,7 +16,8 @@
 package org.cufy.jose
 
 import org.cufy.json.asJsonObjectOrNull
-import org.cufy.json.decodeJsonStringOrNull
+import org.cufy.json.decodeJsonOrNull
+import kotlin.Result.Companion.failure
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -46,12 +47,24 @@ sealed class CompactJWT {
     val decodedHeaderOrNull by lazy {
         Base64.UrlSafe.decode(header)
             .decodeToString()
-            .decodeJsonStringOrNull()
+            .decodeJsonOrNull()
             ?.asJsonObjectOrNull
     }
 }
 
 /* ============= ------------------ ============= */
+
+/**
+ * Split this string into either CompactJWE or CompactJWS
+ * depending on the number of periods ('.') in this string.
+ */
+fun String.decodeCompactJWTCatching(): Result<CompactJWT> {
+    return when (count { it == '.' }) {
+        2 -> decodeCompactJWSCatching()
+        4 -> decodeCompactJWECatching()
+        else -> failure(IllegalArgumentException("Malformed JWT was presented"))
+    }
+}
 
 /**
  * Split this string into either CompactJWE or CompactJWS
