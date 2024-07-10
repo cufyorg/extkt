@@ -17,10 +17,7 @@ package org.cufy.json
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.*
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 
@@ -246,4 +243,35 @@ inline fun <reified T> T.serializeToJsonElementCatching(json: Json = Json): Resu
     } catch (e: SerializationException) {
         failure(e)
     }
+}
+
+// T => JsonObject
+
+/**
+ * Serializes the [this] into an equivalent [JsonObject] using a serializer retrieved
+ * from reified type parameter.
+ *
+ * @throws [SerializationException] if the given value cannot be serialized to JSON.
+ * @throws [ClassCastException] if the given value was not serialized to JsonObject.
+ */
+inline fun <reified T> T.serializeToJsonObject(json: Json = Json): JsonObject {
+    return serializeToJsonElement(json) as JsonObject
+}
+
+/**
+ * Serializes the [this] into an equivalent [JsonObject] using a serializer retrieved
+ * from reified type parameter.
+ * Returns `null` when on failure.
+ */
+inline fun <reified T> T.serializeToJsonObjectOrNull(json: Json = Json): JsonObject? {
+    return serializeToJsonElementOrNull(json) as? JsonObject
+}
+
+/**
+ * Serializes the [this] into an equivalent [JsonObject] using a serializer retrieved
+ * from reified type parameter.
+ */
+inline fun <reified T> T.serializeToJsonObjectCatching(json: Json = Json): Result<JsonObject> {
+    return serializeToJsonElementCatching(json)
+        .mapCatching { it as JsonObject }
 }
