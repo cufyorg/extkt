@@ -21,6 +21,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 // JsonElement <= String
 
@@ -48,6 +50,17 @@ fun String.decodeJsonOrNull(json: Json = Json): JsonElement? {
         json.parseToJsonElement(this)
     } catch (_: SerializationException) {
         return null
+    }
+}
+
+/**
+ * Tries to deserialize [this] JSON string into a corresponding [JsonElement] representation.
+ */
+fun String.decodeJsonCatching(json: Json = Json): Result<JsonElement> {
+    return try {
+        success(json.parseToJsonElement(this))
+    } catch (e: SerializationException) {
+        failure(e)
     }
 }
 
@@ -97,6 +110,20 @@ inline fun <reified T> String.deserializeJsonOrNull(json: Json = Json): T? {
     }
 }
 
+/**
+ * Decodes and deserializes [this] string to the value of type [T] using deserializer
+ * retrieved from the reified type parameter.
+ */
+inline fun <reified T> String.deserializeJsonCatching(json: Json = Json): Result<T> {
+    return try {
+        success(json.decodeFromString<T>(this))
+    } catch (e: SerializationException) {
+        failure(e)
+    } catch (e: IllegalArgumentException) {
+        failure(e)
+    }
+}
+
 // T <= JsonElement
 
 @Deprecated("Use the new name", ReplaceWith("deserialize<T>(json)"))
@@ -131,6 +158,20 @@ inline fun <reified T> JsonElement.deserializeOrNull(json: Json = Json): T? {
     }
 }
 
+/**
+ * Deserializes [this] json element into a value of type [T] using a deserializer retrieved
+ * from reified type parameter.
+ */
+inline fun <reified T> JsonElement.deserializeCatching(json: Json = Json): Result<T> {
+    return try {
+        success(json.decodeFromJsonElement<T>(this))
+    } catch (e: SerializationException) {
+        failure(e)
+    } catch (e: IllegalArgumentException) {
+        failure(e)
+    }
+}
+
 // T => String
 
 /**
@@ -143,6 +184,33 @@ inline fun <reified T> T.serializeToJsonString(json: Json = Json): String {
     return json.encodeToString(this)
 }
 
+/**
+ * Serializes and encodes [this] to string using serializer retrieved from the reified type parameter.
+ * Returns `null` when on failure.
+ */
+inline fun <reified T> T.serializeToJsonStringOrNull(json: Json = Json): String? {
+    return try {
+        json.encodeToString(this)
+    } catch (_: SerializationException) {
+        null
+    } catch (_: IllegalArgumentException) {
+        null
+    }
+}
+
+/**
+ * Serializes and encodes [this] to string using serializer retrieved from the reified type parameter.
+ */
+inline fun <reified T> T.serializeToJsonStringCatching(json: Json = Json): Result<String> {
+    return try {
+        success(json.encodeToString(this))
+    } catch (e: SerializationException) {
+        failure(e)
+    } catch (e: IllegalArgumentException) {
+        failure(e)
+    }
+}
+
 // T => JsonElement
 
 /**
@@ -153,4 +221,29 @@ inline fun <reified T> T.serializeToJsonString(json: Json = Json): String {
  */
 inline fun <reified T> T.serializeToJsonElement(json: Json = Json): JsonElement {
     return json.encodeToJsonElement(this)
+}
+
+/**
+ * Serializes the [this] into an equivalent [JsonElement] using a serializer retrieved
+ * from reified type parameter.
+ * Returns `null` when on failure.
+ */
+inline fun <reified T> T.serializeToJsonElementOrNull(json: Json = Json): JsonElement? {
+    return try {
+        return json.encodeToJsonElement(this)
+    } catch (_: SerializationException) {
+        null
+    }
+}
+
+/**
+ * Serializes the [this] into an equivalent [JsonElement] using a serializer retrieved
+ * from reified type parameter.
+ */
+inline fun <reified T> T.serializeToJsonElementCatching(json: Json = Json): Result<JsonElement> {
+    return try {
+        success(json.encodeToJsonElement(this))
+    } catch (e: SerializationException) {
+        failure(e)
+    }
 }
