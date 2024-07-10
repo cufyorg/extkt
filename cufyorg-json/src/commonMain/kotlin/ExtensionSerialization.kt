@@ -24,12 +24,18 @@ import kotlinx.serialization.json.encodeToJsonElement
 
 // JsonElement <= String
 
+@Deprecated("Use the new name", ReplaceWith("decodeJson(json)"))
+fun String.decodeJsonString(json: Json = Json): JsonElement = decodeJson(json)
+
+@Deprecated("Use the new name", ReplaceWith("decodeJsonOrNull(json)"))
+fun String.decodeJsonStringOrNull(json: Json = Json): JsonElement? = decodeJsonOrNull(json)
+
 /**
  * Deserializes [this] JSON string into a corresponding [JsonElement] representation.
  *
  * @throws [SerializationException] if the given string is not a valid JSON
  */
-fun String.decodeJsonString(json: Json = Json): JsonElement {
+fun String.decodeJson(json: Json = Json): JsonElement {
     return json.parseToJsonElement(this)
 }
 
@@ -37,7 +43,7 @@ fun String.decodeJsonString(json: Json = Json): JsonElement {
  * Tries to deserialize [this] JSON string into a corresponding [JsonElement] representation.
  * Returns `null` when on failure.
  */
-fun String.decodeJsonStringOrNull(json: Json = Json): JsonElement? {
+fun String.decodeJsonOrNull(json: Json = Json): JsonElement? {
     return try {
         json.parseToJsonElement(this)
     } catch (_: SerializationException) {
@@ -47,14 +53,23 @@ fun String.decodeJsonStringOrNull(json: Json = Json): JsonElement? {
 
 // JsonElement => String
 
+@Deprecated("Use the new name", ReplaceWith("encodeToString(json)"))
+fun JsonElement.encodeToJsonString(json: Json = Json): String = encodeToString(json)
+
 /**
  * Serializes [this] [JsonElement] representation into JSON string.
  */
-fun JsonElement.encodeToJsonString(json: Json = Json): String {
+fun JsonElement.encodeToString(json: Json = Json): String {
     return json.encodeToString(this)
 }
 
 // T <= String
+
+@Deprecated("Use the new name", ReplaceWith("deserializeJson<T>(json)"))
+inline fun <reified T> String.deserializeJsonString(json: Json = Json): T = deserializeJson(json)
+
+@Deprecated("Use the new name", ReplaceWith("deserializeJsonOrNull<T>(json)"))
+inline fun <reified T> String.deserializeJsonStringOrNull(json: Json = Json): T? = deserializeJsonOrNull(json)
 
 /**
  * Decodes and deserializes [this] string to the value of type [T] using deserializer
@@ -63,7 +78,7 @@ fun JsonElement.encodeToJsonString(json: Json = Json): String {
  * @throws SerializationException in case of any decoding-specific error
  * @throws IllegalArgumentException if the decoded input is not a valid instance of [T]
  */
-inline fun <reified T> String.deserializeJsonString(json: Json = Json): T {
+inline fun <reified T> String.deserializeJson(json: Json = Json): T {
     return json.decodeFromString(this)
 }
 
@@ -72,7 +87,7 @@ inline fun <reified T> String.deserializeJsonString(json: Json = Json): T {
  * retrieved from the reified type parameter.
  * Returns `null` when on failure.
  */
-inline fun <reified T> String.deserializeJsonStringOrNull(json: Json = Json): T? {
+inline fun <reified T> String.deserializeJsonOrNull(json: Json = Json): T? {
     return try {
         json.decodeFromString(this)
     } catch (_: SerializationException) {
@@ -84,6 +99,12 @@ inline fun <reified T> String.deserializeJsonStringOrNull(json: Json = Json): T?
 
 // T <= JsonElement
 
+@Deprecated("Use the new name", ReplaceWith("deserialize<T>(json)"))
+inline fun <reified T> JsonElement.deserializeJsonElement(json: Json = Json): T = deserialize(json)
+
+@Deprecated("Use the new name", ReplaceWith("deserializeOrNull<T>(json)"))
+inline fun <reified T> JsonElement.deserializeJsonElementOrNull(json: Json = Json): T? = deserializeOrNull(json)
+
 /**
  * Deserializes [this] json element into a value of type [T] using a deserializer retrieved
  * from reified type parameter.
@@ -91,7 +112,7 @@ inline fun <reified T> String.deserializeJsonStringOrNull(json: Json = Json): T?
  * @throws [SerializationException] if the given JSON element is not a valid JSON input for the type [T]
  * @throws [IllegalArgumentException] if the decoded input cannot be represented as a valid instance of type [T]
  */
-inline fun <reified T> JsonElement.deserializeJsonElement(json: Json = Json): T {
+inline fun <reified T> JsonElement.deserialize(json: Json = Json): T {
     return json.decodeFromJsonElement(this)
 }
 
@@ -100,7 +121,7 @@ inline fun <reified T> JsonElement.deserializeJsonElement(json: Json = Json): T 
  * from reified type parameter.
  * Returns `null` when on failure.
  */
-inline fun <reified T> JsonElement.deserializeJsonElementOrNull(json: Json = Json): T? {
+inline fun <reified T> JsonElement.deserializeOrNull(json: Json = Json): T? {
     return try {
         json.decodeFromJsonElement(this)
     } catch (_: SerializationException) {
