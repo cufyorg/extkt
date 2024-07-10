@@ -16,6 +16,7 @@
 package org.cufy.jose
 
 import kotlinx.serialization.json.JsonObject
+import org.cufy.json.JsonObject
 import org.cufy.json.MutableJsonObjectLike
 import org.cufy.json.toJsonObject
 
@@ -34,6 +35,24 @@ data class JWT(
      */
     val payload: JsonObject,
 )
+
+/* ============= ------------------ ============= */
+
+/**
+ * Return a [JWT] instance with [this] as its payload
+ * and the given [headers] as its headers.
+ */
+fun JsonObject.toJWT(headers: JsonObject = JsonObject()): JWT {
+    return JWT(headers, this)
+}
+
+/**
+ * Return a [JWT] instance with [this] as its payload
+ * and the result of the given [headers] block as its headers.
+ */
+fun JsonObject.toJWT(headers: MutableJsonObjectLike.() -> Unit): JWT {
+    return JWT(JsonObject(headers), this)
+}
 
 /* ============= ------------------ ============= */
 
