@@ -69,3 +69,9 @@ val JWT.exp: String? get() = payload["exp"]?.asStringOrNull
 val JWT.nbf: String? get() = payload["nbf"]?.asStringOrNull
 val JWT.iat: String? get() = payload["iat"]?.asStringOrNull
 val JWT.jti: String? get() = payload["jti"]?.asStringOrNull
+
+//
+
+val CompactJWS.client_id: String? get() = decodedPayloadOrNull?.get("client_id")?.asStringOrNull
+
+val JWT.client_id: String? get() = payload["client_id"]?.asStringOrNull
