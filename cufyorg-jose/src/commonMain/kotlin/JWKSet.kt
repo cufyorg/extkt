@@ -15,6 +15,7 @@
  */
 package org.cufy.jose
 
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
@@ -28,36 +29,22 @@ typealias JWKSet = Set<JWK>
 /**
  * Construct a new [JWKSet] using the given [parameters].
  */
-fun createJWKSetCatching(vararg parameters: JsonObject): Result<JWKSet> {
-    return createJWKSetCatching(parameters.asList())
-}
+fun createJWKSetCatching(parameters: JsonObject): Result<JWKSet> {
+    val keys = parameters["keys"]
 
-/**
- * Construct a new [JWKSet] using the given [parameters].
- *
- * If construction fails, throw an [IllegalArgumentException].
- */
-fun createJWKSet(vararg parameters: JsonObject): JWKSet {
-    return createJWKSet(parameters.asList())
-}
+    if (keys !is JsonArray)
+        return failure(IllegalArgumentException("Bad JWKSet keys. Expected JsonArray"))
 
-/**
- * Construct a new [JWKSet] using the given [parameters].
- *
- * If construction fails, return `null`.
- */
-fun createJWKSetOrNull(vararg parameters: JsonObject): JWKSet? {
-    return createJWKSetOrNull(parameters.asList())
-}
+    val count = keys.size
+    return success(buildSet(count) {
+        for (i in 0..<count) {
+            val key = keys[i]
 
-/* ============= ------------------ ============= */
+            if (key !is JsonObject)
+                return failure(IllegalArgumentException("Bad JWK. Expected JsonObject"))
 
-/**
- * Construct a new [JWKSet] using the given [parameters].
- */
-fun createJWKSetCatching(parameters: Iterable<JsonObject>): Result<JWKSet> {
-    return success(parameters.mapTo(mutableSetOf()) {
-        createJWKCatching(it).getOrElse { return failure(it) }
+            this += createJWKCatching(key).getOrElse { return failure(it) }
+        }
     })
 }
 
@@ -66,7 +53,7 @@ fun createJWKSetCatching(parameters: Iterable<JsonObject>): Result<JWKSet> {
  *
  * If construction fails, throw an [IllegalArgumentException].
  */
-fun createJWKSet(parameters: Iterable<JsonObject>): JWKSet {
+fun createJWKSet(parameters: JsonObject): JWKSet {
     return createJWKSetCatching(parameters).getOrThrow()
 }
 
@@ -75,7 +62,7 @@ fun createJWKSet(parameters: Iterable<JsonObject>): JWKSet {
  *
  * If construction fails, return `null`.
  */
-fun createJWKSetOrNull(parameters: Iterable<JsonObject>): JWKSet? {
+fun createJWKSetOrNull(parameters: JsonObject): JWKSet? {
     return createJWKSetCatching(parameters).getOrNull()
 }
 
