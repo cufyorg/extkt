@@ -1,7 +1,12 @@
-# Cufyorg: Serialization (including: Partial Encoding / Decoding "PED") [![](https://jitpack.io/v/org.cufy/serialization.svg)](https://jitpack.io/#org.cufy/serialization)
+# Cufyorg: Serialization [![](https://jitpack.io/v/org.cufy/serialization.svg)](https://jitpack.io/#org.cufy/serialization)
 
 Serialization Extensions and Serializers for enhancing partial encoding and decoding
 that uses no object mapping.
+
+> NOTE: `PED` is deprecated and will be moved to its own project in the future
+> JSON and BSON extensions are enough for straightforward partial encoding/decoding experience
+
+> NOTE: `crypto` is under construction
 
 ### Install
 
