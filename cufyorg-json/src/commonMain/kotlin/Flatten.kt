@@ -33,7 +33,7 @@ fun Map<String, String>.unflattenToJsonObject(): JsonObject {
                 val lastRelativeDotPeriodIndex = lastPath.indexOf('.', prefix.length)
 
                 if (lastRelativeDotPeriodIndex == -1) {
-                    put(name, last.coerceJsonPrimitive())
+                    put(name, LenientJson.parseToJsonElement(last))
                 } else {
                     put(name, mergeToJsonObject("$prefix$name"))
                 }
