@@ -62,10 +62,7 @@ internal fun CompactJWS.jose4j_verifyCatching(jwk: Jose4jJWK, defaultConstraints
         return failure(e)
     }
 
-    if (!isVerified)
-        return failure(IllegalArgumentException("jws verification failed: invalid signature"))
-
-    return success(true)
+    return success(isVerified)
 }
 
 /* ============= ------------------ ============= */
