@@ -31,7 +31,7 @@ class MiscTest {
 
         assertEquals(expectedCompact, actualCompact)
 
-        val actualJwt = actualCompact.verify(jwks)
+        val actualJwt = actualCompact.verified(jwks)
 
         assertEquals(expectedJwt, actualJwt)
     }

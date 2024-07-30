@@ -196,7 +196,7 @@ fun JWT.signToStringOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): St
  *
  * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-expect fun CompactJWS.verifyCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT>
+expect fun CompactJWS.verifiedCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT>
 
 /**
  * Decode JWS components, find matching key in [jwks],
@@ -208,8 +208,8 @@ expect fun CompactJWS.verifyCatching(jwks: JWKSet, defaultConstraints: Boolean =
  *
  * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun CompactJWS.verify(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
-    return verifyCatching(jwks, defaultConstraints).getOrThrow()
+fun CompactJWS.verified(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
+    return verifiedCatching(jwks, defaultConstraints).getOrThrow()
 }
 
 /**
@@ -222,8 +222,8 @@ fun CompactJWS.verify(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
  *
  * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun CompactJWS.verifyOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
-    return verifyCatching(jwks, defaultConstraints).getOrNull()
+fun CompactJWS.verifiedOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
+    return verifiedCatching(jwks, defaultConstraints).getOrNull()
 }
 
 /* ============= ------------------ ============= */
@@ -236,9 +236,9 @@ fun CompactJWS.verifyOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): J
  *
  * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.verifyCompactJWSCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT> {
+fun String.verifiedCompactJWSCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<JWT> {
     return decodeCompactJWSCatching().fold(
-        { it.verifyCatching(jwks, defaultConstraints) },
+        { it.verifiedCatching(jwks, defaultConstraints) },
         { failure(it) }
     )
 }
@@ -253,8 +253,8 @@ fun String.verifyCompactJWSCatching(jwks: JWKSet, defaultConstraints: Boolean = 
  *
  * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.verifyCompactJWS(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
-    return decodeCompactJWS().verify(jwks, defaultConstraints)
+fun String.verifiedCompactJWS(jwks: JWKSet, defaultConstraints: Boolean = true): JWT {
+    return decodeCompactJWS().verified(jwks, defaultConstraints)
 }
 
 /**
@@ -267,8 +267,8 @@ fun String.verifyCompactJWS(jwks: JWKSet, defaultConstraints: Boolean = true): J
  *
  * @param defaultConstraints enables protection over well-known dangerous scenarios.
  */
-fun String.verifyCompactJWSOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
-    return decodeCompactJWSOrNull()?.verifyOrNull(jwks, defaultConstraints)
+fun String.verifiedCompactJWSOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): JWT? {
+    return decodeCompactJWSOrNull()?.verifiedOrNull(jwks, defaultConstraints)
 }
 
 /* ============= ------------------ ============= */

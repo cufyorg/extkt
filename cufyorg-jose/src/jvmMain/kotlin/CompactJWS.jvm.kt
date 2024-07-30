@@ -34,7 +34,7 @@ actual fun JWT.signCatching(jwks: JWKSet, defaultConstraints: Boolean): Result<C
 
 /* ============= ------------------ ============= */
 
-actual fun CompactJWS.verifyCatching(jwks: Set<JWK>, defaultConstraints: Boolean): Result<JWT> {
+actual fun CompactJWS.verifiedCatching(jwks: Set<JWK>, defaultConstraints: Boolean): Result<JWT> {
     val h = this.decodedHeaderOrNull
 
     val kid = h?.get("kid")?.asStringOrNull
@@ -51,7 +51,7 @@ actual fun CompactJWS.verifyCatching(jwks: Set<JWK>, defaultConstraints: Boolean
     jwk ?: return failure(IllegalArgumentException("jws verification failed: no matching key: kid=$kid; alg=$alg"))
 
     return when (jwk) {
-        is Jose4jJWK -> jose4j_verifyCatching(jwk, defaultConstraints)
+        is Jose4jJWK -> jose4j_verifiedCatching(jwk, defaultConstraints)
     }
 }
 

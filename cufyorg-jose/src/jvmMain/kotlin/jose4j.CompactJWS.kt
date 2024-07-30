@@ -47,7 +47,7 @@ internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK, defaultConstraints: Boolean
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
-internal fun CompactJWS.jose4j_verifyCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<JWT> {
+internal fun CompactJWS.jose4j_verifiedCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<JWT> {
     val jose4j = JsonWebSignature()
     if (!defaultConstraints) {
         jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
