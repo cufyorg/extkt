@@ -21,6 +21,7 @@ import org.jose4j.jwk.PublicJsonWebKey
 import org.jose4j.jws.JsonWebSignature
 import org.jose4j.lang.JoseException
 import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
@@ -42,6 +43,29 @@ internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK, defaultConstraints: Boolean
     jose4j.setHeader("alg", alg)
 
     return jose4j.signToCompactJWSCatching()
+}
+
+/* ============= ------------------ ============= */
+
+@Suppress("FunctionName")
+internal fun CompactJWS.jose4j_verifyCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<Boolean> {
+    val jose4j = JsonWebSignature()
+    if (!defaultConstraints) {
+        jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+    }
+    jose4j.applyCatching(this).onFailure { return failure(it) }
+    jose4j.key = jwk.java.key
+
+    val isVerified = try {
+        jose4j.verifySignature()
+    } catch (e: JoseException) {
+        return failure(e)
+    }
+
+    if (!isVerified)
+        return failure(IllegalArgumentException("jws verification failed: invalid signature"))
+
+    return success(true)
 }
 
 /* ============= ------------------ ============= */

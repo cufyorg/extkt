@@ -17,6 +17,7 @@ package org.cufy.jose
 
 import org.cufy.json.asStringOrNull
 import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
@@ -29,6 +30,29 @@ actual fun JWT.signCatching(jwks: JWKSet, defaultConstraints: Boolean): Result<C
 
     return when (jwk) {
         is Jose4jJWK -> jose4j_signCatching(jwk, defaultConstraints)
+    }
+}
+
+/* ============= ------------------ ============= */
+
+actual fun CompactJWS.verifyCatching(jwks: JWKSet, defaultConstraints: Boolean): Result<Boolean> {
+    val h = this.decodedHeaderOrNull
+
+    val kid = h?.get("kid")?.asStringOrNull
+    val alg = h?.get("alg")?.asStringOrNull
+
+    if (alg == "none") {
+        if (defaultConstraints)
+            return failure(IllegalArgumentException("jws verification failed: algorithm 'none' is not allowed"))
+
+        return success(true)
+    }
+
+    val jwk = jwks.findVerify(kid, alg)
+    jwk ?: return failure(IllegalArgumentException("jws verification failed: no matching key: kid=$kid; alg=$alg"))
+
+    return when (jwk) {
+        is Jose4jJWK -> jose4j_verifyCatching(jwk, defaultConstraints)
     }
 }
 

@@ -190,6 +190,91 @@ fun JWT.signToStringOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): St
 
 /**
  * Decode JWS components, find matching key in [jwks],
+ * verify signature and return true if verified.
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
+ */
+expect fun CompactJWS.verifyCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<Boolean>
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return true if verified.
+ *
+ * If verification fails, throw an [IllegalArgumentException].
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
+ */
+fun CompactJWS.verify(jwks: JWKSet, defaultConstraints: Boolean = true): Boolean {
+    return verifyCatching(jwks, defaultConstraints).getOrThrow()
+}
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return true if verified.
+ *
+ * If verification fails, return `null`.
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
+ */
+fun CompactJWS.verifyOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): Boolean? {
+    return verifyCatching(jwks, defaultConstraints).getOrNull()
+}
+
+/* ============= ------------------ ============= */
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return true if verified.
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
+ */
+fun String.verifyCompactJWSCatching(jwks: JWKSet, defaultConstraints: Boolean = true): Result<Boolean> {
+    return decodeCompactJWSCatching().fold(
+        { it.verifyCatching(jwks, defaultConstraints) },
+        { failure(it) }
+    )
+}
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return true if verified.
+ *
+ * If verification fails, throw an [IllegalArgumentException].
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
+ */
+fun String.verifyCompactJWS(jwks: JWKSet, defaultConstraints: Boolean = true): Boolean {
+    return decodeCompactJWS().verify(jwks, defaultConstraints)
+}
+
+/**
+ * Decode JWS components, find matching key in [jwks],
+ * verify signature and return true if verified.
+ *
+ * If verification fails, return `null`.
+ *
+ * > If the algorithm is set to `none`, no verification will be done.
+ *
+ * @param defaultConstraints enables protection over well-known dangerous scenarios.
+ */
+fun String.verifyCompactJWSOrNull(jwks: JWKSet, defaultConstraints: Boolean = true): Boolean? {
+    return decodeCompactJWSOrNull()?.verifyOrNull(jwks, defaultConstraints)
+}
+
+/* ============= ------------------ ============= */
+
+/**
+ * Decode JWS components, find matching key in [jwks],
  * verify signature and return JWT components.
  *
  * > If the algorithm is set to `none`, no verification will be done.
