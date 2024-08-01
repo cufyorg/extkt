@@ -44,7 +44,7 @@ import org.cufy.bson.MutableBsonMapField
  * @since 2.0.0
  */
 @DeprecatedWithContextParameters
-interface BsonFieldCodec<I, O : BsonElement> : FieldCodec<I, O>, MutableBsonMapField<I> {
+interface BsonFieldCodec<I> : FieldCodec<I, BsonElement>, MutableBsonMapField<I> {
     override fun encode(value: I): BsonElement =
         encode(value, this)
 }
@@ -55,8 +55,8 @@ interface BsonFieldCodec<I, O : BsonElement> : FieldCodec<I, O>, MutableBsonMapF
  */
 @Suppress("FunctionName")
 @DeprecatedWithContextParameters
-fun <I, O : BsonElement> FieldCodec(name: String, codec: Codec<I, O>): BsonFieldCodec<I, O> {
-    return object : BsonFieldCodec<I, O>, Codec<I, O> by codec {
+fun <I> FieldCodec(name: String, codec: BsonCodec<I>): BsonFieldCodec<I> {
+    return object : BsonFieldCodec<I>, BsonCodec<I> by codec {
         override val name = name
     }
 }
@@ -68,8 +68,8 @@ fun <I, O : BsonElement> FieldCodec(name: String, codec: Codec<I, O>): BsonField
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultIn(defaultValue: I): BsonFieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I> BsonFieldCodec<I>.defaultIn(defaultValue: I): BsonFieldCodec<I> {
+    val codec = this as BsonCodec<I>
     return FieldCodec(name, codec defaultIn defaultValue)
 }
 
@@ -78,8 +78,8 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultIn(defaultValue: I): 
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchIn(block: (Throwable) -> I): BsonFieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I> BsonFieldCodec<I>.catchIn(block: (Throwable) -> I): BsonFieldCodec<I> {
+    val codec = this as BsonCodec<I>
     return FieldCodec(name, codec catchIn block)
 }
 
@@ -88,8 +88,8 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchIn(block: (Throwable) -
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultOut(defaultValue: O): BsonFieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I> BsonFieldCodec<I>.defaultOut(defaultValue: BsonElement): BsonFieldCodec<I> {
+    val codec = this as BsonCodec<I>
     return FieldCodec(name, codec defaultOut defaultValue)
 }
 
@@ -98,8 +98,8 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.defaultOut(defaultValue: O):
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchOut(block: (Throwable) -> O): BsonFieldCodec<I, O> {
-    val codec = this as Codec<I, O>
+infix fun <I> BsonFieldCodec<I>.catchOut(block: (Throwable) -> BsonElement): BsonFieldCodec<I> {
+    val codec = this as BsonCodec<I>
     return FieldCodec(name, codec catchOut block)
 }
 
@@ -111,7 +111,7 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.catchOut(block: (Throwable) 
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> Codec<I, O>.at(name: String): BsonFieldCodec<I, O> {
+infix fun <I> BsonCodec<I>.at(name: String): BsonFieldCodec<I> {
     return FieldCodec(name, this)
 }
 
@@ -130,7 +130,7 @@ infix fun <I, O : BsonElement> Codec<I, O>.at(name: String): BsonFieldCodec<I, O
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> String.be(codec: Codec<I, O>): BsonFieldCodec<I, O> {
+infix fun <I> String.be(codec: BsonCodec<I>): BsonFieldCodec<I> {
     return FieldCodec(this, codec)
 }
 

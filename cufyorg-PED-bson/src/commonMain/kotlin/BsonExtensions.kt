@@ -23,7 +23,7 @@ import org.cufy.bson.*
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.lang(tag: String): BsonFieldCodec<I, O> {
+infix fun <I> BsonFieldCodec<I>.lang(tag: String): BsonFieldCodec<I> {
     if (tag.isEmpty()) return this
     return FieldCodec("$name#$tag", this)
 }
@@ -34,7 +34,7 @@ infix fun <I, O : BsonElement> BsonFieldCodec<I, O>.lang(tag: String): BsonField
  */
 @PEDMarker3
 @DeprecatedWithContextParameters
-infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.lang(tag: String): BsonNullableFieldCodec<I, O> {
+infix fun <I> BsonNullableFieldCodec<I>.lang(tag: String): BsonNullableFieldCodec<I> {
     if (tag.isEmpty()) return this
     return FieldCodec("$name#$tag", this)
 }
@@ -43,7 +43,7 @@ infix fun <I, O : BsonElement> BsonNullableFieldCodec<I, O>.lang(tag: String): B
  * Create an instance [I] from first constructing a [BsonDocument] with
  * the given [block] then decoding it with [this] codec.
  */
-inline operator fun <I> Codec<I, BsonDocument>.invoke(block: BsonDocumentBlock): I {
+inline operator fun <I> BsonCodec<I>.invoke(block: BsonDocumentBlock): I {
     return BsonDocument(block) decode this
 }
 
@@ -51,6 +51,6 @@ inline operator fun <I> Codec<I, BsonDocument>.invoke(block: BsonDocumentBlock):
  * Get the value of the field with the name of the
  * given [codec] and decode it using the given [codec].
  */
-operator fun <I> BsonDocumentLike.get(codec: FieldCodec<I, out BsonElement>): I {
+operator fun <I> BsonDocumentLike.get(codec: FieldCodec<I, BsonElement>): I {
     return this[codec.name] decodeAny codec
 }

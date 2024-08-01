@@ -22,6 +22,10 @@ import kotlin.Result.Companion.success
 
 /* ============= ------------------ ============= */
 
+typealias BsonCodec<I> = Codec<I, BsonElement>
+
+/* ============= ------------------ ============= */
+
 /**
  * A codec that always decodes nullish values
  * to `null` and encodes `null` to [BsonNull] and
@@ -32,9 +36,7 @@ import kotlin.Result.Companion.success
  * @author LSafer
  * @since 2.0.0
  */
-class BsonNullableCodec<I, O : BsonElement>(
-    val codec: Codec<I, O>,
-) : NullableCodec<I, BsonElement> {
+class BsonNullableCodec<I>(val codec: BsonCodec<I>) : NullableCodec<I, BsonElement> {
     override fun encode(value: Any?) =
         when (value) {
             null -> success(BsonNull)
@@ -55,7 +57,7 @@ class BsonNullableCodec<I, O : BsonElement>(
  *
  * Nullish values includes `null`, [BsonNull] and [BsonUndefined]
  */
-val <I, O : BsonElement> Codec<I, O>.Nullable: BsonNullableCodec<I, O>
+val <I> BsonCodec<I>.Nullable: BsonNullableCodec<I>
     get() = BsonNullableCodec(this)
 
 /**
@@ -65,8 +67,8 @@ val <I, O : BsonElement> Codec<I, O>.Nullable: BsonNullableCodec<I, O>
  *
  * Nullish values includes `null`, [BsonNull] and [BsonUndefined]
  */
-val <I, O : BsonElement> FieldCodec<I, O>.Nullable: BsonNullableFieldCodec<I, BsonElement>
-    get() = FieldCodec(name, (this as Codec<I, O>).Nullable)
+val <I> FieldCodec<I, BsonElement>.Nullable: BsonNullableFieldCodec<I>
+    get() = FieldCodec(name, (this as BsonCodec<I>).Nullable)
 
 /* ============= ------------------ ============= */
 
@@ -75,9 +77,7 @@ val <I, O : BsonElement> FieldCodec<I, O>.Nullable: BsonNullableFieldCodec<I, Bs
  * the given [codec] to encode/decode each
  * individual item.
  */
-class BsonArrayCodec<I, O : BsonElement>(
-    val codec: Codec<I, O>,
-) : Codec<List<I>, BsonArray> {
+class BsonArrayCodec<I>(val codec: BsonCodec<I>) : BsonCodec<List<I>> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: List<*> ->
             success(BsonArray {
@@ -100,7 +100,7 @@ class BsonArrayCodec<I, O : BsonElement>(
  * uses this codec to encode/decode each
  * individual item.
  */
-val <I, O : BsonElement> Codec<I, O>.Array: BsonArrayCodec<I, O>
+val <I> BsonCodec<I>.Array: BsonArrayCodec<I>
     get() = BsonArrayCodec(this)
 
 /**
@@ -108,8 +108,8 @@ val <I, O : BsonElement> Codec<I, O>.Array: BsonArrayCodec<I, O>
  * uses this codec to encode/decode each
  * individual item.
  */
-val <I, O : BsonElement> FieldCodec<I, O>.Array: BsonFieldCodec<List<I>, BsonArray>
-    get() = FieldCodec(name, (this as Codec<I, O>).Array)
+val <I> FieldCodec<I, BsonElement>.Array: BsonFieldCodec<List<I>>
+    get() = FieldCodec(name, (this as BsonCodec<I>).Array)
 
 /* ============= ------------------ ============= */
 
@@ -118,7 +118,7 @@ val <I, O : BsonElement> FieldCodec<I, O>.Array: BsonFieldCodec<List<I>, BsonArr
  *
  * @since 2.0.0
  */
-object BsonStringCodec : Codec<String, BsonString> {
+object BsonStringCodec : BsonCodec<String> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: String ->
             success(BsonString(it))
@@ -137,7 +137,7 @@ object BsonStringCodec : Codec<String, BsonString> {
  *
  * @since 2.0.0
  */
-object BsonBooleanCodec : Codec<Boolean, BsonBoolean> {
+object BsonBooleanCodec : BsonCodec<Boolean> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Boolean ->
             success(BsonBoolean(it))
@@ -156,7 +156,7 @@ object BsonBooleanCodec : Codec<Boolean, BsonBoolean> {
  *
  * @since 2.0.0
  */
-object BsonInt32Codec : Codec<Int, BsonInt32> {
+object BsonInt32Codec : BsonCodec<Int> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Int ->
             success(BsonInt32(it))
@@ -175,7 +175,7 @@ object BsonInt32Codec : Codec<Int, BsonInt32> {
  *
  * @since 2.0.0
  */
-object BsonInt64Codec : Codec<Long, BsonInt64> {
+object BsonInt64Codec : BsonCodec<Long> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Long ->
             success(BsonInt64(it))
@@ -194,7 +194,7 @@ object BsonInt64Codec : Codec<Long, BsonInt64> {
  *
  * @since 2.0.0
  */
-object BsonDoubleCodec : Codec<Double, BsonDouble> {
+object BsonDoubleCodec : BsonCodec<Double> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Double ->
             success(BsonDouble(it))
@@ -213,7 +213,7 @@ object BsonDoubleCodec : Codec<Double, BsonDouble> {
  *
  * @since 2.0.0
  */
-object BsonDecimal128Codec : Codec<Decimal128, BsonDecimal128> {
+object BsonDecimal128Codec : BsonCodec<Decimal128> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Decimal128 ->
             success(BsonDecimal128(it))
@@ -230,7 +230,7 @@ object BsonDecimal128Codec : Codec<Decimal128, BsonDecimal128> {
  *
  * @since 2.0.0
  */
-object BsonDateTimeCodec : Codec<Long, BsonDateTime> {
+object BsonDateTimeCodec : BsonCodec<Long> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Long ->
             success(BsonDateTime(it))
@@ -249,7 +249,7 @@ object BsonDateTimeCodec : Codec<Long, BsonDateTime> {
  *
  * @since 2.0.0
  */
-object BsonInstantCodec : Codec<Instant, BsonDateTime> {
+object BsonInstantCodec : BsonCodec<Instant> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Instant ->
             success(BsonDateTime(it))
@@ -268,7 +268,7 @@ object BsonInstantCodec : Codec<Instant, BsonDateTime> {
  *
  * @since 2.0.0
  */
-object BsonObjectIdCodec : Codec<ObjectId, BsonObjectId> {
+object BsonObjectIdCodec : BsonCodec<ObjectId> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: ObjectId ->
             success(BsonObjectId(it))
@@ -290,7 +290,7 @@ typealias BsonIdCodec = BsonIDCodec
  *
  * @since 2.0.0
  */
-object BsonIDCodec : Codec<ID<*>, BsonElement> {
+object BsonIDCodec : BsonCodec<ID<*>> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: ID<*> ->
             success(it.bson)

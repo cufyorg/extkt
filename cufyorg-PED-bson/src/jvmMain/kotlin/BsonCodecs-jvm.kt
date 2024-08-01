@@ -28,7 +28,7 @@ import java.util.*
  *
  * @since 2.0.0
  */
-object BsonBigDecimalCodec : Codec<BigDecimal, BsonDecimal128> {
+object BsonBigDecimalCodec : BsonCodec<BigDecimal> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: BigDecimal ->
             Result.success(BsonDecimal128(Decimal128(it)))
@@ -47,7 +47,7 @@ object BsonBigDecimalCodec : Codec<BigDecimal, BsonDecimal128> {
  *
  * @since 2.0.0
  */
-object BsonDateCodec : Codec<Date, BsonDateTime> {
+object BsonDateCodec : BsonCodec<Date> {
     override fun encode(value: Any?) =
         tryInlineCodec(value) { it: Date ->
             Result.success(BsonDateTime(it))
