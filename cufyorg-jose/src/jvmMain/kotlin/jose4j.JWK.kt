@@ -29,6 +29,12 @@ data class Jose4jJWK(
     val java: JsonWebKey,
     override val parameters: JsonObject,
 ) : JWK {
+    override val publicParameters by lazy {
+        java.toParams(JsonWebKey.OutputControlLevel.PUBLIC_ONLY)
+            .jose4j_toJsonElementCatching()
+            .getOrThrow()
+    }
+
     override val kty: String = java.keyType
     override val use: String? = java.use
     override val kid: String? = java.keyId

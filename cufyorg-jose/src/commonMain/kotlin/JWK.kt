@@ -30,6 +30,11 @@ expect sealed interface JWK {
     val parameters: JsonObject
 
     /**
+     * Only public parameters of this key.
+     */
+    val publicParameters: JsonObject
+
+    /**
      * Optimized shortcut for:
      *
      * ```

@@ -26,6 +26,7 @@ import kotlin.Result.Companion.success
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual sealed interface JWK {
     actual val parameters: JsonObject
+    actual val publicParameters: JsonObject
 
     actual val kty: String
     actual val use: String?
