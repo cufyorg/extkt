@@ -15,10 +15,9 @@
  */
 package org.cufy.jose
 
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import org.cufy.json.JsonObject
-import org.cufy.json.MutableJsonObjectLike
-import org.cufy.json.toJsonObject
+import org.cufy.json.*
 
 /* ============= ------------------ ============= */
 
@@ -33,8 +32,16 @@ data class JWT(
     /**
      * The payload claims.
      */
-    val payload: JsonObject,
-)
+    val payload: String,
+) {
+    /**
+     * The decoded payload of the jwt.
+     */
+    val decodedPayloadOrNull by lazy {
+        payload.decodeJsonOrNull()
+            ?.asJsonObjectOrNull
+    }
+}
 
 /* ============= ------------------ ============= */
 
@@ -43,7 +50,7 @@ data class JWT(
  * and the given [headers] as its headers.
  */
 fun JsonObject.toJWT(headers: JsonObject = JsonObject()): JWT {
-    return JWT(headers, this)
+    return JWT(headers, encodeToString())
 }
 
 /**
@@ -51,40 +58,21 @@ fun JsonObject.toJWT(headers: JsonObject = JsonObject()): JWT {
  * and the result of the given [headers] block as its headers.
  */
 fun JsonObject.toJWT(headers: MutableJsonObjectLike.() -> Unit): JWT {
-    return JWT(JsonObject(headers), this)
+    return JWT(JsonObject(headers), encodeToString())
 }
 
 /* ============= ------------------ ============= */
 
-open class JWTBuilder {
-    val header: MutableJsonObjectLike = mutableMapOf()
-    val payload: MutableJsonObjectLike = mutableMapOf()
-
-    fun build(): JWT {
-        return JWT(
-            header = this.header.toJsonObject(),
-            payload = this.payload.toJsonObject(),
-        )
-    }
+fun JWT.headers(vararg headers: Pair<String, JsonElement>): JWT {
+    return JWT(header = JsonObject(header + headers), payload = payload)
 }
 
-/**
- * Construct a new [JWT] using the given builder [block].
- */
-fun JWT(block: JWTBuilder.() -> Unit): JWT {
-    return JWTBuilder().apply(block).build()
+fun JWT.headers(headers: JsonObject = JsonObject()): JWT {
+    return JWT(header = JsonObject(header + headers), payload = payload)
 }
 
-/* ============= ------------------ ============= */
-
-/**
- * Create a copy of this JWT, apply [block] to it, and return it.
- */
-fun JWT.append(block: JWTBuilder.() -> Unit): JWT {
-    val builder = JWTBuilder()
-    builder.header += this.header
-    builder.payload += this.payload
-    return builder.build()
+fun JWT.headers(block: MutableJsonObjectLike.() -> Unit): JWT {
+    return JWT(header = JsonObject(header + buildMap(block)), payload = payload)
 }
 
 /* ============= ------------------ ============= */

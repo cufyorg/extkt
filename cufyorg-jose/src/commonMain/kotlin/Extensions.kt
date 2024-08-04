@@ -68,19 +68,19 @@ val CompactJWS.nbf: Instant? get() = decodedPayloadOrNull?.get("nbf")?.asInstant
 val CompactJWS.iat: Instant? get() = decodedPayloadOrNull?.get("iat")?.asInstantOrNull
 val CompactJWS.jti: String? get() = decodedPayloadOrNull?.get("jti")?.asStringOrNull
 
-val JWT.iss: String? get() = payload["iss"]?.asStringOrNull
-val JWT.sub: String? get() = payload["sub"]?.asStringOrNull
-val JWT.aud: List<String>? get() = payload["aud"]?.asStringListOrNull
-val JWT.exp: Instant? get() = payload["exp"]?.asInstantOrNull
-val JWT.nbf: Instant? get() = payload["nbf"]?.asInstantOrNull
-val JWT.iat: Instant? get() = payload["iat"]?.asInstantOrNull
-val JWT.jti: String? get() = payload["jti"]?.asStringOrNull
+val JWT.iss: String? get() = decodedPayloadOrNull?.get("iss")?.asStringOrNull
+val JWT.sub: String? get() = decodedPayloadOrNull?.get("sub")?.asStringOrNull
+val JWT.aud: List<String>? get() = decodedPayloadOrNull?.get("aud")?.asStringListOrNull
+val JWT.exp: Instant? get() = decodedPayloadOrNull?.get("exp")?.asInstantOrNull
+val JWT.nbf: Instant? get() = decodedPayloadOrNull?.get("nbf")?.asInstantOrNull
+val JWT.iat: Instant? get() = decodedPayloadOrNull?.get("iat")?.asInstantOrNull
+val JWT.jti: String? get() = decodedPayloadOrNull?.get("jti")?.asStringOrNull
 
 //
 
 val CompactJWS.client_id: String? get() = decodedPayloadOrNull?.get("client_id")?.asStringOrNull
 
-val JWT.client_id: String? get() = payload["client_id"]?.asStringOrNull
+val JWT.client_id: String? get() = decodedPayloadOrNull?.get("client_id")?.asStringOrNull
 
 //
 

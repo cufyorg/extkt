@@ -15,10 +15,8 @@
  */
 package org.cufy.jose
 
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.*
 import org.cufy.json.decodeJson
-import org.cufy.json.encodeToString
 import org.jose4j.jwe.JsonWebEncryption
 import org.jose4j.jws.JsonWebSignature
 import org.jose4j.jwx.Headers
@@ -33,7 +31,7 @@ import kotlin.Result.Companion.success
 
 fun JsonWebStructure.applyCatching(jwt: JWT): Result<Unit> {
     this.headers.applyCatching(jwt.header).onFailure { return failure(it) }
-    this.payload = jwt.payload.encodeToString()
+    this.payload = jwt.payload
     return success(Unit)
 }
 
@@ -57,15 +55,7 @@ fun JsonWebEncryption.applyCatching(compact: CompactJWE): Result<Unit> {
 
 fun JsonWebStructure.toJWTCatching(): Result<JWT> {
     val header = this.headers.toJsonObject()
-    val payload = try {
-        this.payload.decodeJson()
-    } catch (e: SerializationException) {
-        return failure(e)
-    }
-
-    if (payload !is JsonObject)
-        return failure(IllegalArgumentException("Bad JWT payload. Expected JsonObject"))
-
+    val payload = this.payload
     return success(JWT(header, payload))
 }
 
