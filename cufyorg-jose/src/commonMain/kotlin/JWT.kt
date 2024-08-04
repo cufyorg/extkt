@@ -76,3 +76,15 @@ fun JWT(block: JWTBuilder.() -> Unit): JWT {
 }
 
 /* ============= ------------------ ============= */
+
+/**
+ * Create a copy of this JWT, apply [block] to it, and return it.
+ */
+fun JWT.append(block: JWTBuilder.() -> Unit): JWT {
+    val builder = JWTBuilder()
+    builder.header += this.header
+    builder.payload += this.payload
+    return builder.build()
+}
+
+/* ============= ------------------ ============= */
