@@ -36,7 +36,7 @@ open class JWTBuilder {
 /**
  * Construct a new [JWT] using the given builder [block].
  */
-fun JWT(block: JWTBuilder.() -> Unit): JWT {
+inline fun JWT(block: JWTBuilder.() -> Unit): JWT {
     return JWTBuilder().apply(block).build()
 }
 
@@ -45,7 +45,7 @@ fun JWT(block: JWTBuilder.() -> Unit): JWT {
  *
  * @throws IllegalArgumentException if the payload cannot be decoded as json.
  */
-fun JWT.append(block: JWTBuilder.() -> Unit): JWT {
+inline fun JWT.append(block: JWTBuilder.() -> Unit): JWT {
     val payload = requireNotNull(this.decodedPayloadOrNull) {
         "jwt.decodedPayloadOrNull was null thus cannot append it as json."
     }
