@@ -71,7 +71,7 @@ fun JsonArray(): JsonArray {
  * given [block] after the execution of this
  * function will result to an undefined behaviour.**
  */
-fun JsonObject(block: MutableJsonObjectLike.() -> Unit): JsonObject {
+inline fun JsonObject(block: MutableJsonObjectLike.() -> Unit): JsonObject {
     return JsonObject(buildMap(block))
 }
 
@@ -82,6 +82,6 @@ fun JsonObject(block: MutableJsonObjectLike.() -> Unit): JsonObject {
  * given [block] after the execution of this
  * function will result to an undefined behaviour.**
  */
-fun JsonArray(block: MutableJsonArrayLike.() -> Unit): JsonArray {
+inline fun JsonArray(block: MutableJsonArrayLike.() -> Unit): JsonArray {
     return JsonArray(buildList(block))
 }
