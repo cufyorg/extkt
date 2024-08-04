@@ -63,6 +63,42 @@ fun JsonObject.toJWT(headers: MutableJsonObjectLike.() -> Unit): JWT {
 
 /* ============= ------------------ ============= */
 
+/**
+ * Return a [JWT] instance with [this] as its payload
+ * and the given [headers] as its headers.
+ */
+fun String.toJWT(headers: JsonObject = JsonObject()): JWT {
+    return JWT(headers, this)
+}
+
+/**
+ * Return a [JWT] instance with [this] as its payload
+ * and the result of the given [headers] block as its headers.
+ */
+fun String.toJWT(headers: MutableJsonObjectLike.() -> Unit): JWT {
+    return JWT(JsonObject(headers), this)
+}
+
+/* ============= ------------------ ============= */
+
+/**
+ * Return a [JWT] instance with [this] as its payload
+ * and the given [headers] as its headers.
+ */
+fun CompactJWT.toNestedJWT(headers: JsonObject = JsonObject()): JWT {
+    return JWT(headers, value)
+}
+
+/**
+ * Return a [JWT] instance with [this] as its payload
+ * and the result of the given [headers] block as its headers.
+ */
+fun CompactJWT.toNestedJWT(headers: MutableJsonObjectLike.() -> Unit): JWT {
+    return JWT(JsonObject(headers), value)
+}
+
+/* ============= ------------------ ============= */
+
 fun JWT.headers(vararg headers: Pair<String, JsonElement>): JWT {
     return JWT(header = JsonObject(header + headers), payload = payload)
 }
