@@ -16,6 +16,7 @@
 package org.cufy.jose
 
 import kotlinx.datetime.Instant
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import org.cufy.json.asJsonArrayOrNull
 import org.cufy.json.asLongOrNull
@@ -62,7 +63,7 @@ val JWT.zip: String? get() = header["zip"]?.asStringOrNull
 
 val CompactJWS.iss: String? get() = decodedPayloadOrNull?.get("iss")?.asStringOrNull
 val CompactJWS.sub: String? get() = decodedPayloadOrNull?.get("sub")?.asStringOrNull
-val CompactJWS.aud: List<String>? get() = decodedPayloadOrNull?.get("aud")?.asStringListOrNull
+val CompactJWS.aud: List<String>? get() = decodedPayloadOrNull?.get("aud")?.asStringListCoerceOrNull
 val CompactJWS.exp: Instant? get() = decodedPayloadOrNull?.get("exp")?.asInstantOrNull
 val CompactJWS.nbf: Instant? get() = decodedPayloadOrNull?.get("nbf")?.asInstantOrNull
 val CompactJWS.iat: Instant? get() = decodedPayloadOrNull?.get("iat")?.asInstantOrNull
@@ -70,7 +71,7 @@ val CompactJWS.jti: String? get() = decodedPayloadOrNull?.get("jti")?.asStringOr
 
 val JWT.iss: String? get() = decodedPayloadOrNull?.get("iss")?.asStringOrNull
 val JWT.sub: String? get() = decodedPayloadOrNull?.get("sub")?.asStringOrNull
-val JWT.aud: List<String>? get() = decodedPayloadOrNull?.get("aud")?.asStringListOrNull
+val JWT.aud: List<String>? get() = decodedPayloadOrNull?.get("aud")?.asStringListCoerceOrNull
 val JWT.exp: Instant? get() = decodedPayloadOrNull?.get("exp")?.asInstantOrNull
 val JWT.nbf: Instant? get() = decodedPayloadOrNull?.get("nbf")?.asInstantOrNull
 val JWT.iat: Instant? get() = decodedPayloadOrNull?.get("iat")?.asInstantOrNull
@@ -86,6 +87,10 @@ val JWT.client_id: String? get() = decodedPayloadOrNull?.get("client_id")?.asStr
 
 private val JsonElement.asStringListOrNull: List<String>?
     get() = asJsonArrayOrNull?.map { it.asStringOrNull ?: return null }
+
+private val JsonElement.asStringListCoerceOrNull: List<String>?
+    get() = if (this is JsonArray) map { it.asStringOrNull ?: return null }
+    else asStringOrNull?.let { listOf(it) }
 
 private val JsonElement.asInstantOrNull: Instant?
     get() = asLongOrNull?.let { Instant.fromEpochSeconds(it) }
