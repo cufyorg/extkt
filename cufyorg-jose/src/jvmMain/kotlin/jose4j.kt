@@ -135,7 +135,7 @@ internal fun JsonElement.jose4j_toJavaObjectCatching(): Result<Any?> {
 @Suppress("FunctionName")
 internal fun Map<*, *>.jose4j_toJsonElementCatching(): Result<JsonObject> {
     return success(JsonObject(entries.associate {
-        "$it" to it.value.jose4j_toJsonElementCatching().getOrElse { return failure(it) }
+        "${it.key}" to it.value.jose4j_toJsonElementCatching().getOrElse { return failure(it) }
     }))
 }
 
