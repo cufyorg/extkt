@@ -25,6 +25,9 @@ actual fun JWT.signCatching(jwks: JWKSet, defaultConstraints: Boolean): Result<C
     val kid = header["kid"]?.asStringOrNull
     val alg = header["alg"]?.asStringOrNull
 
+    if (alg == "none")
+        return jose4j_signCatching(defaultConstraints)
+
     val jwk = jwks.findSign(kid, alg)
     jwk ?: return failure(IllegalArgumentException("jws signing failed: no matching key: kid=$kid; alg=$alg"))
 

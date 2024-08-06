@@ -26,6 +26,20 @@ import kotlin.Result.Companion.success
 /* ============= ------------------ ============= */
 
 @Suppress("FunctionName")
+internal fun JWT.jose4j_signCatching(defaultConstraints: Boolean): Result<CompactJWS> {
+    val alg = header["alg"]?.asStringOrNull
+
+    val jose4j = JsonWebSignature()
+    if (!defaultConstraints) {
+        jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
+    }
+    jose4j.applyCatching(this).onFailure { return failure(it) }
+    jose4j.setHeader("alg", alg)
+
+    return jose4j.signToCompactJWSCatching()
+}
+
+@Suppress("FunctionName")
 internal fun JWT.jose4j_signCatching(jwk: Jose4jJWK, defaultConstraints: Boolean): Result<CompactJWS> {
     if (jwk.java !is PublicJsonWebKey)
         return failure(IllegalArgumentException("jwt signing failed: key is not an asymmetric key"))
