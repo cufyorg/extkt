@@ -107,6 +107,7 @@ internal fun CompactJWS.jose4j_verifiedCatching(jwk: Jose4jJWK, defaultConstrain
 @Suppress("FunctionName")
 internal fun CompactJWS.jose4j_unverifiedCatching(): Result<JWT> {
     val jose4j = JsonWebSignature()
+    jose4j.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS)
     jose4j.applyCatching(this).onFailure { return failure(it) }
     return jose4j.toJWTCatching()
 }
