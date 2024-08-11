@@ -26,6 +26,13 @@ val Codecs get() = Bson
  */
 object Bson {
     /**
+     * Pass-through codec for [BsonDocument].
+     *
+     * @since 2.0.0
+     */
+    val Document = BsonDocumentCodec
+
+    /**
      * The codec for [String] and [BsonString].
      *
      * @since 2.0.0

@@ -114,6 +114,16 @@ val <I> FieldCodec<I, BsonElement>.Array: BsonFieldCodec<List<I>>
 /* ============= ------------------ ============= */
 
 /**
+ * Pass-through codec for [BsonDocument].
+ */
+object BsonDocumentCodec : BsonCodec<BsonDocument> {
+    override fun encode(value: Any?) = tryInlineCodec(value) { it: BsonDocument -> success(it) }
+    override fun decode(value: Any?) = tryInlineCodec(value) { it: BsonDocument -> success(it) }
+}
+
+/* ============= ------------------ ============= */
+
+/**
  * The codec for [String] and [BsonString].
  *
  * @since 2.0.0
