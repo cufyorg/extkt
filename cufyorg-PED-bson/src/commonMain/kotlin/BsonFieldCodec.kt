@@ -134,4 +134,15 @@ infix fun <I> String.be(codec: BsonCodec<I>): BsonFieldCodec<I> {
     return FieldCodec(this, codec)
 }
 
+/**
+ * Create a new field codec with the receiver name
+ * plus a dot (`.`) plus the name of [other] and
+ * backed by the codec of [other].
+ */
+@PEDMarker2
+@DeprecatedWithContextParameters
+infix fun <I> FieldCodec<*, *>.dot(other: BsonFieldCodec<I>): BsonFieldCodec<I> {
+    return FieldCodec("${this.name}.${other.name}", other)
+}
+
 /* ============= ------------------ ============= */
