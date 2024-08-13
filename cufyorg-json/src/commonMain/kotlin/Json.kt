@@ -17,9 +17,9 @@ package org.cufy.json
 
 import kotlinx.serialization.json.Json
 
-internal val LenientJson = Json { isLenient = true }
-internal val LenientPrettyJson = Json { isLenient = true; prettyPrint = true }
-internal val PrettyJson = Json { prettyPrint = true }
+val LenientJson = Json { isLenient = true }
+val LenientPrettyJson = Json { isLenient = true; prettyPrint = true }
+val PrettyJson = Json { prettyPrint = true }
 
 fun Json(lenient: Boolean = false, pretty: Boolean = false): Json {
     return when {
