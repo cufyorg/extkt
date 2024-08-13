@@ -8,10 +8,10 @@ actual fun String.deflate(level: Int): ByteArray {
     TODO("Not yet implemented")
 }
 
-actual fun ByteArray.dedeflate(level: Int): ByteArray {
+actual fun ByteArray.inflate(): ByteArray {
     TODO("Not yet implemented")
 }
 
-actual fun ByteArray.dedeflateToString(level: Int): String {
+actual fun ByteArray.inflateToString(): String {
     TODO("Not yet implemented")
 }

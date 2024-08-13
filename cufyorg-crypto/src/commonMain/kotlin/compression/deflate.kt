@@ -10,8 +10,8 @@ expect fun String.deflate(level: Int /* 0-9 */): ByteArray
 
 // deflate => byte[]
 
-expect fun ByteArray.dedeflate(level: Int /* 0-9 */): ByteArray
+expect fun ByteArray.inflate(): ByteArray
 
 // deflate => string
 
-expect fun ByteArray.dedeflateToString(level: Int /* 0-9 */): String
+expect fun ByteArray.inflateToString(): String
