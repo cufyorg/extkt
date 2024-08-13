@@ -34,5 +34,8 @@ class MiscTest {
         val actualJwt = actualCompact.verified(jwks)
 
         assertEquals(expectedJwt, actualJwt)
+
+        // verify that unverified() does not fail
+        actualCompact.unverified()
     }
 }
