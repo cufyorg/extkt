@@ -148,6 +148,7 @@ interface MutableBsonMapField<T> {
  * @author LSafer
  * @since 2.0.0
  */
+@BsonMarker2
 @DeprecatedWithContextParameters
 interface IMutableBsonDocumentLike : BsonDocumentLike, MutableMap<String, BsonElement> {
     /* ============= ------------------ ============= */
@@ -193,6 +194,27 @@ interface IMutableBsonDocumentLike : BsonDocumentLike, MutableMap<String, BsonEl
      */
     @BsonMarker2
     fun array(vararg elements: BsonElement) = BsonArray(*elements)
+
+    /**
+     * Static (pure) utility function to prettify
+     * creating documents within the dsl.
+     *
+     * Usage:
+     * ```
+     * BsonDocument {
+     *     "a" by document {
+     *         "a" by 100L
+     *         "b" by "item"
+     *         /* ... */
+     *     }
+     * }
+     * ```
+     *
+     * @return a document built with the given [block].
+     * @since 2.0.0
+     */
+    @BsonMarker2
+    fun document(block: BsonDocumentBlock) = BsonDocument(block)
 
     /* ============= ------------------ ============= */
 

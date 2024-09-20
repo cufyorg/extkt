@@ -121,6 +121,7 @@ fun mutableBsonArrayOf(vararg elements: BsonElement): MutableBsonArrayLike {
  *
  * @since 2.0.0
  */
+@BsonMarker2
 @DeprecatedWithContextParameters
 interface IMutableBsonArrayLike : BsonArrayLike, MutableList<BsonElement> {
     /* ============= ------------------ ============= */
@@ -166,6 +167,27 @@ interface IMutableBsonArrayLike : BsonArrayLike, MutableList<BsonElement> {
      */
     @BsonMarker2
     fun array(vararg elements: BsonElement) = BsonArray(*elements)
+
+    /**
+     * Static (pure) utility function to prettify
+     * creating documents within the dsl.
+     *
+     * Usage:
+     * ```
+     * BsonArray {
+     *     by(document {
+     *         "a" by 100L
+     *         "b" by "item"
+     *         /* ... */
+     *     })
+     * }
+     * ```
+     *
+     * @return a document built with the given [block].
+     * @since 2.0.0
+     */
+    @BsonMarker2
+    fun document(block: BsonDocumentBlock) = BsonDocument(block)
 
     /* ============= ------------------ ============= */
 
