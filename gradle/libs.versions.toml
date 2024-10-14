@@ -7,8 +7,4 @@ kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version =
 
 tink = { module = "com.google.crypto.tink:tink", version = "1.10.0" }
 
-mongodb-sync = { module = "org.mongodb:mongodb-driver-sync", version = "5.1.1" }
-mongodb-reactivestreams = { module = "org.mongodb:mongodb-driver-reactivestreams", version = "5.1.1" }
-
-brianCampbell-jose4j = { module = "org.bitbucket.b_c:jose4j", version = "0.9.6" }
 favre-bcrypt = { module = "at.favre.lib:bcrypt", version = "0.9.0" }

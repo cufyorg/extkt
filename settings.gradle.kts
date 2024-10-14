@@ -1,10 +1,3 @@
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
-        }
-    }
-}
 pluginManagement {
     repositories {
         mavenCentral()
@@ -14,9 +7,11 @@ pluginManagement {
 
 rootProject.name = "cufyorg-serialization"
 
-// include directories that starts with "cufyorg-"
+val moduleNamePrefix = "module-"
 for (file in rootDir.listFiles().orEmpty()) {
-    if (file.isDirectory && file.name.startsWith("cufyorg-")) {
-        include(":${file.name}")
+    if (file.isDirectory && file.name.startsWith(moduleNamePrefix)) {
+        val moduleName = file.name.removePrefix(moduleNamePrefix)
+        include(moduleName)
+        project(":$moduleName").projectDir = file
     }
 }
