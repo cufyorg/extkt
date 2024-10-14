@@ -4,14 +4,13 @@ plugins {
 }
 
 group = "org.cufy"
-version = "2.0.0"
 
 tasks.wrapper {
     gradleVersion = "8.2.1"
 }
 
 subprojects {
-    group = "org.cufy.serialization"
+    group = "org.cufy.extkt"
 
     repositories {
         mavenCentral()

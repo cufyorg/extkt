@@ -1,12 +1,6 @@
-# Cufyorg: Serialization [![](https://jitpack.io/v/org.cufy/serialization.svg)](https://jitpack.io/#org.cufy/serialization)
+# Kotlin Extensions [![](https://jitpack.io/v/org.cufy/extkt.svg)](https://jitpack.io/#org.cufy/extkt)
 
-Serialization Extensions and Serializers for enhancing partial encoding and decoding
-that uses no object mapping.
-
-> NOTE: `PED` is deprecated and will be moved to its own project in the future
-> JSON and BSON extensions are enough for straightforward partial encoding/decoding experience
-
-> NOTE: `crypto` is under construction
+Kotlin Extensions for enhancing partial encoding and decoding that uses no object mapping.
 
 ### Install
 
@@ -22,9 +16,7 @@ repositories {
 
 dependencies {
     // Replace TAG with the desired version
-    implementation("org.cufy.serialization:cufyorg-bson:TAG")
-    implementation("org.cufy.serialization:cufyorg-json:TAG")
-    implementation("org.cufy.serialization:cufyorg-PED-core:TAG")
-    implementation("org.cufy.serialization:cufyorg-PED-bson:TAG")
+    implementation("org.cufy.extkt:extkt-crypto:TAG")
+    implementation("org.cufy.extkt:extkt-json:TAG")
 }
 ```

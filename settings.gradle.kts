@@ -5,7 +5,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "cufyorg-serialization"
+rootProject.name = "extkt"
 
 val moduleNamePrefix = "module-"
 for (file in rootDir.listFiles().orEmpty()) {
