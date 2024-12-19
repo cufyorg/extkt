@@ -24,7 +24,7 @@ import kotlin.jvm.JvmName
 
 /** return a copy of [this] with [block] applied to it. */
 fun JsonObjectLike.copy(block: MutableJsonObjectLike.() -> Unit): JsonObject {
-    return JsonObject(buildMap { putAll(this); block() })
+    return JsonObject(buildMap { putAll(this@copy); block() })
 }
 
 //

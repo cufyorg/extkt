@@ -23,7 +23,7 @@ import kotlinx.serialization.json.JsonPrimitive
 
 /** return a copy of [this] with [block] applied to it. */
 fun JsonArrayLike.copy(block: MutableJsonArrayLike.() -> Unit): JsonArray {
-    return JsonArray(buildList { addAll(this); block() })
+    return JsonArray(buildList { addAll(this@copy); block() })
 }
 
 //
