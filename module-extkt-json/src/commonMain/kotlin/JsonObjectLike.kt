@@ -31,50 +31,50 @@ fun JsonObjectLike.copy(block: MutableJsonObjectLike.() -> Unit): JsonObject {
 
 /** return the combination of [this] and the given key-value [pair] */
 @JvmName("plusStringMapPair")
-operator fun JsonObjectLike.plus(pair: Pair<String, JsonObjectLike?>): JsonObjectLike {
+operator fun JsonObjectLike.plus(pair: Pair<String, JsonObjectLike?>): JsonObject {
     val (name, value) = pair
     val element = value?.toJsonObject().orJsonNull()
-    return this + (name to element)
+    return JsonObject(this + (name to element))
 }
 
 /** return the combination of [this] and the given key-value [pair] */
 @JvmName("plusStringListPair")
-operator fun JsonObjectLike.plus(pair: Pair<String, JsonArrayLike?>): JsonObjectLike {
+operator fun JsonObjectLike.plus(pair: Pair<String, JsonArrayLike?>): JsonObject {
     val (name, value) = pair
     val element = value?.toJsonArray().orJsonNull()
-    return this + (name to element)
+    return JsonObject(this + (name to element))
 }
 
 /** return the combination of [this] and the given key-value [pair] */
 @JvmName("plusStringStringPair")
-operator fun JsonObjectLike.plus(pair: Pair<String, String?>): JsonObjectLike {
+operator fun JsonObjectLike.plus(pair: Pair<String, String?>): JsonObject {
     val (name, value) = pair
     val element = JsonPrimitive(value)
-    return this + (name to element)
+    return JsonObject(this + (name to element))
 }
 
 /** return the combination of [this] and the given key-value [pair] */
 @JvmName("plusStringNumberPair")
-operator fun JsonObjectLike.plus(pair: Pair<String, Number?>): JsonObjectLike {
+operator fun JsonObjectLike.plus(pair: Pair<String, Number?>): JsonObject {
     val (name, value) = pair
     val element = JsonPrimitive(value)
-    return this + (name to element)
+    return JsonObject(this + (name to element))
 }
 
 /** return the combination of [this] and the given key-value [pair] */
 @JvmName("plusStringBooleanPair")
-operator fun JsonObjectLike.plus(pair: Pair<String, Boolean?>): JsonObjectLike {
+operator fun JsonObjectLike.plus(pair: Pair<String, Boolean?>): JsonObject {
     val (name, value) = pair
     val element = JsonPrimitive(value)
-    return this + (name to element)
+    return JsonObject(this + (name to element))
 }
 
 /** return the combination of [this] and the given key-value [pair] */
 @JvmName("plusStringNothingPair")
-operator fun JsonObjectLike.plus(pair: Pair<String, Nothing?>): JsonObjectLike {
+operator fun JsonObjectLike.plus(pair: Pair<String, Nothing?>): JsonObject {
     val (name, _) = pair
     val element = JsonNull
-    return this + (name to element)
+    return JsonObject(this + (name to element))
 }
 
 //

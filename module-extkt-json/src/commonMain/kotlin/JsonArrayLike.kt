@@ -29,77 +29,77 @@ fun JsonArrayLike.copy(block: MutableJsonArrayLike.() -> Unit): JsonArray {
 //
 
 /** return the combination of [this] and the given [value] */
-operator fun JsonArrayLike.plus(value: JsonObjectLike?): JsonArrayLike {
+operator fun JsonArrayLike.plus(value: JsonObjectLike?): JsonArray {
     val element = value?.toJsonObject().orJsonNull()
-    return this + element
+    return JsonArray(this + element)
 }
 
 /** return the combination of [this] and the given [value] */
-operator fun JsonArrayLike.plus(value: JsonArrayLike?): JsonArrayLike {
+operator fun JsonArrayLike.plus(value: JsonArrayLike?): JsonArray {
     val element = value?.toJsonArray().orJsonNull()
-    return this + element
+    return JsonArray(this + element)
 }
 
 /** return the combination of [this] and the given [value] */
-operator fun JsonArrayLike.plus(value: String?): JsonArrayLike {
+operator fun JsonArrayLike.plus(value: String?): JsonArray {
     val element = JsonPrimitive(value)
-    return this + element
+    return JsonArray(this + element)
 }
 
 /** return the combination of [this] and the given [value] */
-operator fun JsonArrayLike.plus(value: Number?): JsonArrayLike {
+operator fun JsonArrayLike.plus(value: Number?): JsonArray {
     val element = JsonPrimitive(value)
-    return this + element
+    return JsonArray(this + element)
 }
 
 /** return the combination of [this] and the given [value] */
-operator fun JsonArrayLike.plus(value: Boolean?): JsonArrayLike {
+operator fun JsonArrayLike.plus(value: Boolean?): JsonArray {
     val element = JsonPrimitive(value)
-    return this + element
+    return JsonArray(this + element)
 }
 
 /** return the combination of [this] and the given [value] */
-operator fun JsonArrayLike.plus(value: Nothing?): JsonArrayLike {
+operator fun JsonArrayLike.plus(value: Nothing?): JsonArray {
     val element = JsonNull
-    return this + element
+    return JsonArray(this + element)
 }
 
 //
 
 /** return the combination of [this] excluding the first element equivalent to [value] */
-operator fun JsonArrayLike.minus(value: JsonObjectLike?): JsonArrayLike {
+operator fun JsonArrayLike.minus(value: JsonObjectLike?): JsonArray {
     val element = value?.toJsonObject().orJsonNull()
-    return this - element
+    return JsonArray(this - element)
 }
 
 /** return the combination of [this] excluding the first element equivalent to [value] */
-operator fun JsonArrayLike.minus(value: JsonArrayLike?): JsonArrayLike {
+operator fun JsonArrayLike.minus(value: JsonArrayLike?): JsonArray {
     val element = value?.toJsonArray().orJsonNull()
-    return this - element
+    return JsonArray(this - element)
 }
 
 /** return the combination of [this] excluding the first element equivalent to [value] */
-operator fun JsonArrayLike.minus(value: String?): JsonArrayLike {
+operator fun JsonArrayLike.minus(value: String?): JsonArray {
     val element = JsonPrimitive(value)
-    return this - element
+    return JsonArray(this - element)
 }
 
 /** return the combination of [this] excluding the first element equivalent to [value] */
-operator fun JsonArrayLike.minus(value: Number?): JsonArrayLike {
+operator fun JsonArrayLike.minus(value: Number?): JsonArray {
     val element = JsonPrimitive(value)
-    return this - element
+    return JsonArray(this - element)
 }
 
 /** return the combination of [this] excluding the first element equivalent to [value] */
-operator fun JsonArrayLike.minus(value: Boolean?): JsonArrayLike {
+operator fun JsonArrayLike.minus(value: Boolean?): JsonArray {
     val element = JsonPrimitive(value)
-    return this - element
+    return JsonArray(this - element)
 }
 
 /** return the combination of [this] excluding the first element equivalent to [value] */
-operator fun JsonArrayLike.minus(value: Nothing?): JsonArrayLike {
+operator fun JsonArrayLike.minus(value: Nothing?): JsonArray {
     val element = JsonNull
-    return this - element
+    return JsonArray(this - element)
 }
 
 //
