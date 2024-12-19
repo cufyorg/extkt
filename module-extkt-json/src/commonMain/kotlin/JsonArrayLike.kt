@@ -15,8 +15,16 @@
  */
 package org.cufy.json
 
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
+
+//
+
+/** return a copy of [this] with [block] applied to it. */
+fun JsonArrayLike.copy(block: MutableJsonArrayLike.() -> Unit): JsonArray {
+    return JsonArray(buildList { addAll(this); block() })
+}
 
 //
 

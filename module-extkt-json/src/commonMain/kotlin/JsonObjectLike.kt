@@ -16,8 +16,16 @@
 package org.cufy.json
 
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.jvm.JvmName
+
+//
+
+/** return a copy of [this] with [block] applied to it. */
+fun JsonObjectLike.copy(block: MutableJsonObjectLike.() -> Unit): JsonObject {
+    return JsonObject(buildMap { putAll(this); block() })
+}
 
 //
 
