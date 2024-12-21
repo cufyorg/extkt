@@ -12,6 +12,14 @@ actual fun ByteArray.inflate(): ByteArray {
     TODO("Not yet implemented")
 }
 
+actual fun ByteArray.inflateOrNull(): ByteArray? {
+    TODO("Not yet implemented")
+}
+
 actual fun ByteArray.inflateToString(): String {
+    TODO("Not yet implemented")
+}
+
+actual fun ByteArray.inflateToStringOrNull(): String? {
     TODO("Not yet implemented")
 }

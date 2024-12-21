@@ -1,5 +1,6 @@
 package org.cufy.text
 
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -66,15 +67,54 @@ actual fun String.decodeBase64(): ByteArray {
 }
 
 @OptIn(ExperimentalEncodingApi::class)
+actual fun String.decodeBase64OrNull(): ByteArray? {
+    return try {
+        Base64.decode(this)
+    } catch (_: IllegalArgumentException) {
+        null
+    }
+}
+
+@OptIn(ExperimentalEncodingApi::class)
 actual fun String.decodeBase64UrlSafe(): ByteArray {
     val base64 = base64UrlSafeToBase64(this)
     return Base64.decode(base64)
+}
+
+@OptIn(ExperimentalEncodingApi::class)
+actual fun String.decodeBase64UrlSafeOrNull(): ByteArray? {
+    return try {
+        val base64 = base64UrlSafeToBase64(this)
+        Base64.decode(base64)
+    } catch (_: IllegalArgumentException) {
+        null
+    }
 }
 
 actual fun String.decodeBase64ToString(): String {
     return atob(this)
 }
 
+actual fun String.decodeBase64ToStringOrNull(): String? {
+    return try {
+        atob(this)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (_: Throwable) {
+        null
+    }
+}
+
 actual fun String.decodeBase64UrlSafeToString(): String {
     return atobUrlSafe(this)
+}
+
+actual fun String.decodeBase64UrlSafeToStringOrNull(): String? {
+    return try {
+        atobUrlSafe(this)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (_: Throwable) {
+        null
+    }
 }

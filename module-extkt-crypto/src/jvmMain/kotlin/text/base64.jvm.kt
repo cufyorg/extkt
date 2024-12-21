@@ -40,14 +40,38 @@ actual fun String.decodeBase64(): ByteArray {
     return Base64.decode(this)
 }
 
+actual fun String.decodeBase64OrNull(): ByteArray? {
+    return try {
+        Base64.decode(this)
+    } catch (_: IllegalArgumentException) {
+        null
+    }
+}
+
 actual fun String.decodeBase64UrlSafe(): ByteArray {
     return Base64.urlSafeDecode(this)
+}
+
+actual fun String.decodeBase64UrlSafeOrNull(): ByteArray? {
+    return try {
+        Base64.urlSafeDecode(this)
+    } catch (_: IllegalArgumentException) {
+        null
+    }
 }
 
 actual fun String.decodeBase64ToString(): String {
     return decodeBase64().decodeToString()
 }
 
+actual fun String.decodeBase64ToStringOrNull(): String? {
+    return decodeBase64OrNull()?.decodeToString()
+}
+
 actual fun String.decodeBase64UrlSafeToString(): String {
     return decodeBase64UrlSafe().decodeToString()
+}
+
+actual fun String.decodeBase64UrlSafeToStringOrNull(): String? {
+    return decodeBase64UrlSafeOrNull()?.decodeToString()
 }

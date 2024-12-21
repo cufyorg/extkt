@@ -12,6 +12,14 @@ actual fun ByteArray.gunzip(): ByteArray {
     TODO("Not yet implemented")
 }
 
+actual fun ByteArray.gunzipOrNull(): ByteArray? {
+    TODO("Not yet implemented")
+}
+
 actual fun ByteArray.gunzipToString(): String {
+    TODO("Not yet implemented")
+}
+
+actual fun ByteArray.gunzipToStringOrNull(): String? {
     TODO("Not yet implemented")
 }

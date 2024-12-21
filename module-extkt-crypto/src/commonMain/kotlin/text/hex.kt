@@ -12,6 +12,10 @@ expect fun String.encodeHex(): String
 
 expect fun String.decodeHex(): ByteArray
 
+expect fun String.decodeHexOrNull(): ByteArray?
+
 // hex => string
 
 expect fun String.decodeHexToString(): String
+
+expect fun String.decodeHexToStringOrNull(): String?

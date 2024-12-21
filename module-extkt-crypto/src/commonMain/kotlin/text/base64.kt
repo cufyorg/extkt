@@ -28,14 +28,22 @@ expect fun String.encodeBase64UrlSafe(offset: Int, length: Int = this.length): S
 
 expect fun String.decodeBase64(): ByteArray
 
+expect fun String.decodeBase64OrNull(): ByteArray?
+
 // base64url => byte[]
 
 expect fun String.decodeBase64UrlSafe(): ByteArray
+
+expect fun String.decodeBase64UrlSafeOrNull(): ByteArray?
 
 // base64 => string
 
 expect fun String.decodeBase64ToString(): String
 
+expect fun String.decodeBase64ToStringOrNull(): String?
+
 // base64url => string
 
 expect fun String.decodeBase64UrlSafeToString(): String
+
+expect fun String.decodeBase64UrlSafeToStringOrNull(): String?

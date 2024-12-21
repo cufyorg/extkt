@@ -8,6 +8,7 @@ import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
+import kotlin.coroutines.cancellation.CancellationException
 
 actual fun ByteArray.deflate(level: Int): ByteArray {
     val baos = ByteArrayOutputStream()
@@ -33,10 +34,30 @@ actual fun ByteArray.inflate(): ByteArray {
     return inflate.use { it.readBytes() }
 }
 
+actual fun ByteArray.inflateOrNull(): ByteArray? {
+    return try {
+        inflate()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (_: RuntimeException) {
+        null
+    }
+}
+
 actual fun ByteArray.inflateToString(): String {
     val bais = ByteArrayInputStream(this)
     val inflater = Inflater()
     val inflate = InflaterInputStream(bais, inflater)
     val isr = InputStreamReader(inflate)
     return isr.use { it.readText() }
+}
+
+actual fun ByteArray.inflateToStringOrNull(): String? {
+    return try {
+        inflateToString()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (_: RuntimeException) {
+        null
+    }
 }
