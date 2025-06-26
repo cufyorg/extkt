@@ -5,13 +5,11 @@ plugins {
 }
 
 kotlin {
-    jvm {
-        withJava()
-    }
+    jvm()
     js {
         binaries.library()
-        browser()
         nodejs()
+        useEsModules()
     }
     sourceSets {
         commonMain {
@@ -22,12 +20,18 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         jvmMain {
             dependencies {
                 implementation(libs.tink)
                 implementation(libs.favre.bcrypt)
+            }
+        }
+        jsMain {
+            dependencies {
+                implementation(npm("bcryptjs", "^3.0.2"))
             }
         }
     }
