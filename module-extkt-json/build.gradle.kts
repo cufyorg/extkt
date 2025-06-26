@@ -6,9 +6,7 @@ plugins {
 }
 
 kotlin {
-    jvm {
-        withJava()
-    }
+    jvm()
     js(IR) {
         browser {
             binaries.library()
@@ -18,8 +16,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(kotlin("stdlib"))
-                implementation(libs.kotlin.serialization.json)
-                implementation(libs.kotlin.datetime)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
         commonTest {
